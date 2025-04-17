@@ -2,7 +2,7 @@
 <h3 align="center">=[ Mining Tools using Termux]=</h3>
 <p align="center">
 	<img src="https://img.shields.io/static/v1?style=for-the-badge&logo=appveyor&label=AUTHOR&message=DJUNEKZ&color=green")<br><br>
-	<img src="https://img.shields.io/static/v1?label=Version&message=1.0.0 Beta&color=green")<br>
+<p align="center">BETA Version</p>
 
 # Mining Tools
 
