@@ -45,8 +45,8 @@ def ya():
       os.system("clear")
       print banner
       print(upd + " Processing Update, please wait don't close session")
-      os.system("wget --quite https://github.com/djunekz/mining/releases/latest/download/mining.tar.gz")
-      os.system("tar -xzf mining.tar.gz && rm mining.tar.gz")
+      os.system("wget --quiet https://github.com/djunekz/mining/releases/latest/download/mining.tar.gz")
+      os.system("tar -xf mining.tar.gz && rm mining.tar.gz")
       os.system("sleep 3")
       print (upd + " Waiting for repacking")
       os.system("sleep 4")
