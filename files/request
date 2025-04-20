@@ -1,1 +1,75 @@
+#!/usr/bin/env python2
+# author : djunekz
+# -*- coding: utf-8 -*-
 
+from marshal import *
+import os, sys
+import fileinput
+
+#color variable
+N = '\033[0m'
+D = '\033[90m'
+W = '\033[1;37m'
+B = '\033[1;34m'
+R = '\033[1;31m'
+G = '\033[1;32m'
+Y = '\033[1;33m'
+C = '\033[1;36m'
+ask= G + '[' + W + 'Wallet' + G + ']'
+upd= Y + '[' + G + '+' + Y + ']'
+sukses= G + '[' + W + '!' + G + ']'
+eror= R + '[' + W + '!' + R + ']'
+
+os.system("clear")
+banner = """
+
+\33[1;32m        ____  _____ ____  _____ \33[1;33m           _
+\33[1;32m       |  _ \| ____|  _ \| ____|\33[1;33m _ __ ___ (_)_ __   ___ _ __
+\33[1;32m       | |_) |  _| | |_) |  _|  \33[1;33m| '_ ` _ \| | '_ \ / _ \ '__|
+\33[1;32m       |  __/| |___|  __/| |___ \33[1;33m| | | | | | | | | |  __/ |
+\33[1;32m       |_|   |_____|_|   |_____|\33[1;33m|_| |_| |_|_|_| |_|\___|_|\33[0m
+
+      \33[1;34m Author\33[1;36m :\33[1;33m D J U N E K Z
+      \33[1;34m GitHub\33[1;36m :\33[1;33m https://github.com/djunekz/
+      \33[1;34m Version\33[1;36m:\33[1;33m 1.0.0
+"""
+print banner
+print (sukses + " Checking version")
+os.system ("sleep 2")
+os.system ("git tag -l --sort=-creatordate | head -n 1")
+print (sukses + " Checking version for New Update")
+os.system ("sleep 3")
+os.system ("git tag -l --sort=-creatordate | sort -r | head -n 1")
+def ya():
+   try:
+      os.system("clear")
+      print banner
+      print(upd + " Processing Update, please wait don't close session")
+      os.system("wget --quite https://github.com/djunekz/mining/releases/latest/download/mining.tar.gz")
+      os.system("tar -xzf mining.tar.gz && rm mining.tar.gz")
+      os.system("sleep 3")
+      print (upd + " Waiting for repacking")
+      os.system("sleep 4")
+      print(upd + " Done")
+      os.system("sleep 2")
+      print (sukses + " Update Successful")
+      os.system("sleep 2")
+      os.system("clear && bash run")
+   except KeyboardInterrupt:
+             print (eror + " Stopped!")
+def no():
+   try:
+      os.system("clear")
+      print banner
+      print (eror + " Nothing update")
+   except KeyboardInterrrupt:
+      print (eror + " Stopped!")
+
+os.system("echo")
+tny = raw_input(W + " Update? " + G + " [Y/n] > ")
+if tny == "Y" or tny == "y":
+      ya()
+elif tny == "N" or tny == "n":
+      no()
+if tny == "":
+      print (eror + " Wrong command!")
