@@ -52,7 +52,7 @@ banner = """
 \33[1;31m       ###############\33[1;33m\33[1m T E R M U X \33[1;31m##############\33[0m
 
       \33[1;34m Author\33[1;36m :\33[1;33m D J U N E K Z
-      \33[1;34m Version\33[1;36m:\33[1;31m \33[102m 1.0.4 \33[0m
+      \33[1;34m Version\33[1;36m:\33[1;31m \33[102m 1.0.0 \33[0m
 """
 print banner
 print (sukses + " Checking new version")
