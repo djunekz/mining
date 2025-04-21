@@ -3,8 +3,9 @@
 # -*- coding: utf-8 -*-
 
 from marshal import *
-import os, sys
+import os, sys, time
 import fileinput
+import argparse
 
 #color variable
 N = '\033[0m'
@@ -20,23 +21,44 @@ upd= Y + '[' + G + '+' + Y + ']'
 sukses= G + '[' + W + '!' + G + ']'
 eror= R + '[' + W + '!' + R + ']'
 
+# list coin
+coinlist="""
+    COIN      COIN NAME         STATUS
+
+ {}[{}>{}]{} PEPE  \33[0m Pepecoin       \33[1;32m[\33[1;33m+\33[1;32m] Runing!
+ {}[{}>{}]{} XLM   \33[0m Stellar        \33[1;32m[\33[1;33m+\33[1;32m] Runing!
+ {}[{}>{}]{} ETH   \33[0m Ethereum       \33[1;31m[\33[1;33m-\33[1;31m] Maintenance!
+ {}[{}>{}]{} LTC   \33[0m Litecoin       \33[1;32m[\33[1;33m+\33[1;32m] Runing!
+ {}[{}>{}]{} USDT  \33[0m Tether         \33[1;32m[\33[1;33m+\33[1;32m] Runing!
+ {}[{}>{}]{} BCH   \33[0m Bitcoin Cash   \33[1;31m[\33[1;33m-\33[1;31m] Maintenance!
+ {}[{}>{}]{} LINK  \33[0m ChainLink      \33[1;31m[\33[1;33m-\33[1;31m] Maintenance!
+ {}[{}>{}]{} BOME  \33[0m Book of Meme   \33[1;31m[\33[1;33m-\33[1;31m] Maintenance!
+ {}[{}>{}]{} TRX   \33[0m Tron           \33[1;31m[\33[1;33m-\33[1;31m] Maintenance!
+ {}[{}>{}]{} SHIB  \33[0m Shiba Inu      \33[1;31m[\33[1;33m-\33[1;31m] Maintenance!
+ {}[{}>{}]{} SOL   \33[0m Solana         \33[1;32m[\33[1;33m+\33[1;32m] Runing!
+ {}[{}>{}]{} DOGE  \33[0m Dogecoin       \33[1;32m[\33[1;33m+\33[1;32m] Runing!\33[0m
+
+""".format(G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,G,W,G,Y,)
+
 os.system("clear")
 banner = """
-
-\33[1;32m        ____  _____ ____  _____ \33[1;33m           _
-\33[1;32m       |  _ \| ____|  _ \| ____|\33[1;33m _ __ ___ (_)_ __   ___ _ __
-\33[1;32m       | |_) |  _| | |_) |  _|  \33[1;33m| '_ ` _ \| | '_ \ / _ \ '__|
-\33[1;32m       |  __/| |___|  __/| |___ \33[1;33m| | | | | | | | | |  __/ |
-\33[1;32m       |_|   |_____|_|   |_____|\33[1;33m|_| |_| |_|_|_| |_|\___|_|\33[0m
+\33[1;31m       ##########################################
+\33[1;31m       ##   \33[1;33m  __  __ _       _        ____    \33[1;31m ##
+\33[1;31m       ##   \33[1;33m |  \/  (_)_ __ (_)_ __  / ___|   \33[1;31m ##
+\33[1;31m       ##   \33[1;33m | |\/| | | '_ \| | '_ \| |  _    \33[1;31m ##
+\33[1;31m       ##   \33[1;33m | |  | | | | | | | | | | |_| |   \33[1;31m ##
+\33[1;31m       ##   \33[1;33m |_|  |_|_|_| |_|_|_| |_|\____|   \33[1;31m ##
+\33[1;31m       ##                                      ##
+\33[1;31m       ###############\33[1;33m\33[1m T E R M U X \33[1;31m##############\33[0m
 
       \33[1;34m Author\33[1;36m :\33[1;33m D J U N E K Z
-      \33[1;34m GitHub\33[1;36m :\33[1;33m https://github.com/djunekz/
-      \33[1;34m Version\33[1;36m:\33[1;33m 1.0.0
+      \33[1;34m Version\33[1;36m:\33[1;31m \33[102m 1.0.4 \33[0m
 """
 print banner
 print (sukses + " Checking new version")
+print
 os.system ("sleep 3")
-os.system ("git tag -l --sort=-creatordate | sort -r | head -n 1")
+os.system ("git ls-remote --tags --sort=committerdate | grep -o 'v.*' | sort -r | head -1")
 def ya():
    try:
       os.system("clear")
@@ -53,20 +75,22 @@ def ya():
       os.system("sleep 2")
       os.system("clear && bash run")
    except KeyboardInterrupt:
-             print (eror + " Stopped!")
+      print (eror + " Stopped!")
 def no():
    try:
       os.system("clear")
       print banner
-      print (eror + " Nothing update")
-   except KeyboardInterrrupt:
+      print (eror + " Nothing Update")
+      os.system("sleep 3")
+      os.system("python2 .termux/main")
+   except KeyboardInterrupt:
       print (eror + " Stopped!")
 
-os.system("echo")
+print
 tny = raw_input(W + " Update? " + G + " [Y/n] > ")
 if tny == "Y" or tny == "y":
-      ya()
-elif tny == "N" or tny == "n":
-      no()
-if tny == "":
-      print (eror + " Wrong command!")
+   ya()
+if tny == "N" or tny == "n":
+   no()
+else:
+   print (eror + " Wrong command!")
