@@ -34,10 +34,7 @@ banner = """
       \33[1;34m Version\33[1;36m:\33[1;33m 1.0.0
 """
 print banner
-print (sukses + " Checking version")
-os.system ("sleep 2")
-os.system ("git tag -l --sort=-creatordate | head -n 1")
-print (sukses + " Checking version for New Update")
+print (sukses + " Checking new version")
 os.system ("sleep 3")
 os.system ("git tag -l --sort=-creatordate | sort -r | head -n 1")
 def ya():
