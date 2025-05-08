@@ -1,0 +1,10 @@
+on: push
+permissions:
+  contents: read
+jobs:
+  mining:
+    runs-on: ubuntu-latest
+    steps:
+      - run: node --version
+      - run: npm --version
+      - run: pip --version
