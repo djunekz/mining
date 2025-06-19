@@ -1,8 +1,10 @@
 <h1 align="center">=[ MINING ]=</h1>
 <h3 align="center">=[ Mining Tools using Termux]=</h3>
 <p align="center">
-<img src="https://img.shields.io/static/v1?style=for-the-badge&logo=appveyor&label=AUTHOR&message=DJUNEKZ&color=green")<br>
-<a href="https://github.com/djunekz/ftool/releases"><img alt="Latest Release" src="https://img.shields.io/github/release/djunekz/ftool.svg" /></a><br>
+<img src="https://img.shields.io/static/v1?style=for-the-badge&logo=appveyor&label=AUTHOR&message=DJUNEKZ&color=green")
+<br>
+<a href="https://github.com/djunekz/mining/releases"><img alt="Latest Release" src="https://img.shields.io/github/release/djunekz/mining.svg" /></a>
+<br>
 
 # Mining Tools
 
