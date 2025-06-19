@@ -25,19 +25,16 @@ Proses instalasi cukup mudah, ikuti seperti dibawah ini
 pkg install git
 git clone https://github.com/djunekz/mining
 cd mining
-bash install
+./install
 ```
 atau
 ```
-pkg install git && git clone https://github.com/djunekz/mining && cd mining && bash install
+pkg install git && git clone https://github.com/djunekz/mining && cd mining && ./install
 ```
 
 # Execute Mining Tool
 
-Untuk eksekusi tool ini cukup menggunakan command
-```
-bash run
-```
+Untuk eksekusi tool ini cukup menggunakan command `./run`
 
 # How to use
 
