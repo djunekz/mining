@@ -1,4 +1,4 @@
-# Menambah koin
+# Kontribusi ke MINING: menambah koin
 
 Tidak perlu mengubah file lain. Cukup:
 
