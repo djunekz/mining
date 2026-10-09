@@ -28,41 +28,56 @@ coin_load() {
   source "$1"
 }
 
+# Satu baris tabel koin:  No  KODE  Nama  Algoritma  [!]
+_coin_row() {
+  local n="$1" sym="$2" name="$3" algo="$4" prac="$5" flag=" " fc="$C_0"
+  [ "$prac" = "no" ] && { flag="!"; fc="$C_Y"; }
+  printf '%s│%s %s%2s%s  %s%-5s%s %-14s %s%-13s%s %s%s%s %s│%s\n' \
+    "$C_L" "$C_0" "$C_C" "$n" "$C_0" "$C_B" "${sym:0:5}" "$C_0" "${name:0:14}" \
+    "$C_D" "${algo:0:13}" "$C_0" "$fc" "$flag" "$C_0" "$C_L" "$C_0"
+}
+
+_coin_table_head() {
+  printf '%s│%s %s%2s  %-5s %-14s %-13s   %s%s│%s\n' "$C_L" "$C_0" "$C_D" "No" "Kode" "Nama" "Algoritma" "$C_0" "$C_L" "$C_0"
+  ui_mid
+}
+
 coins_menu_list() {
-  ui_banner
-  echo "${C_B}== DAFTAR KOIN ==${C_0}"
-  local n=0 line sym name algo miner pool note prac file
-  printf "%3s %-6s %-18s %-16s %-9s %s\n" "No" "Kode" "Nama" "Algoritma" "Miner" "Keterangan"
-  echo "---------------------------------------------------------------------"
+  ui_head "DAFTAR KOIN"
+  _coin_table_head
+  local n=0 sym name algo miner pool note prac file
   while IFS='|' read -r sym name algo miner pool note prac file; do
     n=$((n+1))
-    local tag=""
-    [ "$prac" = "no" ] && tag="${C_Y}[tdk praktis]${C_0} "
-    printf "%3s %-6s %-18s %-16s %-9s %s%s\n" "$n" "$sym" "$name" "$algo" "$miner" "$tag" "$note"
+    _coin_row "$n" "$sym" "$name" "$algo" "$prac"
   done < <(coins_scan)
+  ui_mid
+  ui_kv "Total" "$n koin" "$C_G"
+  ui_text "! = tidak praktis di HP (butuh ASIC/GPU)" "$C_Y"
+  ui_bottom
   echo
-  ui_info "Total: $n koin. Tambah koin = tambah file di folder coins/."
+  ui_info "Tambah koin: buat 1 file di folder coins/"
   ui_pause
 }
 
 # Menu pilih koin untuk mining
 mining_select_coin() {
+  local c
   while true; do
-    ui_banner
-    echo "${C_B}== PILIH KOIN UNTUK MINING ==${C_0}"
+    ui_head "PILIH KOIN"
+    _coin_table_head
     local -a rows=()
     local line i=0 sym name algo miner pool note prac file
     mapfile -t rows < <(coins_scan)
     for line in "${rows[@]}"; do
       IFS='|' read -r sym name algo miner pool note prac file <<<"$line"
       i=$((i+1))
-      local tag=""
-      [ "$prac" = "no" ] && tag="${C_Y}[tdk praktis]${C_0}"
-      printf "%3s. %-6s %-18s %-14s %s\n" "$i" "$sym" "$name" "$algo" "$tag"
+      _coin_row "$i" "$sym" "$name" "$algo" "$prac"
     done
-    echo "  0. Kembali"
+    ui_mid
+    ui_row 0 "Kembali" "Ke menu utama"
+    ui_bottom
     echo
-    read -rp "Pilih koin: " c || exit 0
+    ui_ask c "Pilih nomor koin"
     [ "$c" = "0" ] && return
     if [[ "$c" =~ ^[0-9]+$ ]] && [ "$c" -ge 1 ] && [ "$c" -le "${#rows[@]}" ]; then
       IFS='|' read -r sym name algo miner pool note prac file <<<"${rows[$((c-1))]}"
