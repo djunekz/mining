@@ -4,10 +4,11 @@ Multi-coin miner launcher untuk **Termux**: satu menu, 30 koin, dan
 **satu file per koin** sehingga kontributor cukup menambah satu file.
 
 ```
-   __  __ ___ _  _ ___ _  _  ___
-  |  \/  |_ _| \| |_ _| \| |/ __|
-  | |\/| || || .` || || .` | (_ |
-  |_|  |_|___|_|\_|___|_|\_|\___|
+  █   █  █████  █   █  █████  █   █   ████
+  ██ ██    █    ██  █    █    ██  █  █
+  █ █ █    █    █ █ █    █    █ █ █  █  ██
+  █   █    █    █  ██    █    █  ██  █   █
+  █   █  █████  █   █  █████  █   █   ████
       M U L T I - C O I N   M I N E R
 ```
 
