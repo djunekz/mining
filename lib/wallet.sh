@@ -27,31 +27,42 @@ wallet_symbol_exists() { coins_scan | cut -d'|' -f1 | grep -qx "$1"; }
 
 wallet_menu() {
   require_login || return
+  local c
   while true; do
-    ui_banner
-    echo "${C_B}== WALLET ==${C_0}"
-    echo " 1. Lihat wallet tersimpan"
-    echo " 2. Tambah / ubah wallet"
-    echo " 3. Hapus wallet"
-    echo " 0. Kembali"
+    ui_head "WALLET"
+    ui_row 1 "Lihat"   "Wallet tersimpan"
+    ui_row 2 "Tambah"  "Tambah / ubah wallet"
+    ui_row 3 "Hapus"   "Hapus wallet"
+    ui_row 0 "Kembali" "Ke menu utama"
+    ui_bottom
     echo
-    read -rp "Pilih: " c || exit 0
+    ui_ask c "Pilih"
     case "$c" in
       1)
-        local f; f="$(_wallet_file)"
-        echo
-        if [ -s "$f" ]; then sed 's/=/  ->  /' "$f"; else ui_warn "Belum ada wallet tersimpan."; fi
-        echo; ui_pause ;;
+        local f k v
+        f="$(_wallet_file)"
+        ui_head "WALLET TERSIMPAN"
+        if [ -s "$f" ]; then
+          while IFS='=' read -r k v; do
+            [ -n "$k" ] && ui_kv "$k" "$(ui_short "$v")" "$C_G"
+          done < "$f"
+        else
+          ui_text "Belum ada wallet tersimpan." "$C_Y"
+        fi
+        ui_bottom
+        ui_pause ;;
       2)
         local s a
-        read -rp "Kode koin (contoh XMR): " s; s="${s^^}"
-        if ! wallet_symbol_exists "$s"; then ui_err "Koin $s tidak ada (cek menu List Koin)."; ui_pause; continue; fi
-        read -rp "Alamat wallet $s: " a
+        echo
+        ui_ask s "Kode koin (contoh XMR)"; s="${s^^}"
+        if ! wallet_symbol_exists "$s"; then ui_err "Koin $s tidak ada (lihat menu List Koin)."; ui_pause; continue; fi
+        ui_ask a "Alamat wallet $s"
         if wallet_valid "$a"; then wallet_set "$s" "$a"; ui_ok "Wallet $s disimpan."; else ui_err "Alamat tidak valid."; fi
         ui_pause ;;
       3)
         local s
-        read -rp "Kode koin yang dihapus: " s; s="${s^^}"
+        echo
+        ui_ask s "Kode koin yang dihapus"; s="${s^^}"
         if [[ "$s" =~ ^[A-Z0-9]{1,10}$ ]]; then wallet_del "$s"; ui_ok "Dihapus (jika ada)."; fi
         ui_pause ;;
       0) return ;;
