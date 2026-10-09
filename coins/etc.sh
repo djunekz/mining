@@ -1,0 +1,7 @@
+COIN_SYMBOL="ETC"
+COIN_NAME="Ethereum Classic"
+COIN_ALGO="etchash"
+COIN_MINER="none"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="Butuh GPU, belum ada miner"
+COIN_PRACTICAL="no"

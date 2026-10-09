@@ -1,0 +1,7 @@
+COIN_SYMBOL="XHV"
+COIN_NAME="Haven"
+COIN_ALGO="cn-heavy/xhv"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU berat"
+COIN_PRACTICAL="yes"

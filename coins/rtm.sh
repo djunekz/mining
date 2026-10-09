@@ -1,0 +1,7 @@
+COIN_SYMBOL="RTM"
+COIN_NAME="Raptoreum"
+COIN_ALGO="ghostrider"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU berat"
+COIN_PRACTICAL="yes"

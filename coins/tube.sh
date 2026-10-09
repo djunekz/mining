@@ -1,0 +1,7 @@
+COIN_SYMBOL="TUBE"
+COIN_NAME="BitTube"
+COIN_ALGO="cn-heavy/tube"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU berat"
+COIN_PRACTICAL="yes"

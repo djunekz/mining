@@ -1,0 +1,7 @@
+COIN_SYMBOL="TRTL"
+COIN_NAME="TurtleCoin"
+COIN_ALGO="argon2/chukwa"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU ringan"
+COIN_PRACTICAL="yes"

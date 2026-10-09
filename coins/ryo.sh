@@ -1,0 +1,7 @@
+COIN_SYMBOL="RYO"
+COIN_NAME="Ryo Currency"
+COIN_ALGO="cn/gpu"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU lambat"
+COIN_PRACTICAL="yes"

@@ -1,0 +1,7 @@
+COIN_SYMBOL="VRSC"
+COIN_NAME="Verus"
+COIN_ALGO="verus"
+COIN_MINER="ccminer"
+COIN_POOL_DEFAULT="na.luckpool.net:3956"
+COIN_NOTE="Populer di HP (butuh ccminer ARM)"
+COIN_PRACTICAL="yes"

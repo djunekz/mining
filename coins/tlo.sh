@@ -1,0 +1,7 @@
+COIN_SYMBOL="TLO"
+COIN_NAME="Talleo"
+COIN_ALGO="cn-pico/tlo"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU ringan"
+COIN_PRACTICAL="yes"

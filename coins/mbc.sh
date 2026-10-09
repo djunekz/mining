@@ -1,0 +1,7 @@
+COIN_SYMBOL="MBC"
+COIN_NAME="MicroBitcoin"
+COIN_ALGO="yespower"
+COIN_MINER="cpuminer"
+COIN_POOL_DEFAULT=""
+COIN_NOTE="CPU"
+COIN_PRACTICAL="yes"

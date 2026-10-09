@@ -1,0 +1,7 @@
+COIN_SYMBOL="XMR"
+COIN_NAME="Monero"
+COIN_ALGO="rx/0"
+COIN_MINER="xmrig"
+COIN_POOL_DEFAULT="pool.supportxmr.com:3333"
+COIN_NOTE="CPU - paling layak di HP"
+COIN_PRACTICAL="yes"

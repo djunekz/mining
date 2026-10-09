@@ -1,0 +1,20 @@
+# =====================================================
+#  TEMPLATE KOIN - salin jadi coins/<simbol-huruf-kecil>.sh
+#  Contoh: cp coins/_TEMPLATE.sh.example coins/abc.sh
+#  Hanya itu yang perlu dilakukan untuk menambah koin.
+#  Jangan pakai karakter '|' di nilai apa pun.
+# =====================================================
+
+COIN_SYMBOL="ABC"                 # huruf besar, HARUS cocok dengan nama file (abc.sh)
+COIN_NAME="Contoh Coin"
+COIN_ALGO="rx/0"                  # nama algoritma sesuai miner (xmrig: rx/0, cn/r, ...)
+COIN_MINER="xmrig"                # xmrig | ccminer | cpuminer | none
+COIN_POOL_DEFAULT=""              # contoh: pool.example.com:3333  (boleh kosong)
+COIN_NOTE="CPU"                   # keterangan singkat
+COIN_PRACTICAL="yes"              # yes = layak di HP, no = butuh ASIC/GPU
+
+# OPSIONAL: jika miner butuh argumen khusus, definisikan coin_cmd.
+# Variabel tersedia: POOL WALLET WORKER THREADS COIN_ALGO
+# coin_cmd() {
+#   CMD=(xmrig -o "$POOL" -u "$WALLET" -p "$WORKER" -a "$COIN_ALGO" -t "$THREADS" --tls)
+# }
