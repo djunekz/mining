@@ -3,7 +3,7 @@
 Tidak perlu mengubah file lain. Cukup:
 
 ```bash
-cp coins/_TEMPLATE.sh.example coins/abc.sh   # abc = simbol koin, huruf kecil
+cp coins/_TEMPLATE.sh.example coins/abc.sh    # abc = simbol koin, huruf kecil
 nano coins/abc.sh                             # isi datanya
 bash tools/check-coins.sh                     # harus "Semua valid."
 ```
