@@ -44,11 +44,12 @@ miner_run() {
 }
 
 miner_start() {
-  ui_banner
-  echo "${C_B}== MINING $COIN_NAME ($COIN_SYMBOL) ==${C_0}"
-  echo " Algoritma : $COIN_ALGO"
-  echo " Miner     : $COIN_MINER"
-  [ -n "$COIN_NOTE" ] && echo " Catatan   : $COIN_NOTE"
+  ui_head "MINING $COIN_SYMBOL"
+  ui_kv "Koin"      "$COIN_NAME" "$C_B"
+  ui_kv "Algoritma" "$COIN_ALGO"
+  ui_kv "Miner"     "$COIN_MINER"
+  [ -n "$COIN_NOTE" ] && ui_kv "Catatan" "$COIN_NOTE" "$C_D"
+  ui_bottom
   echo
 
   if [ "$COIN_PRACTICAL" = "no" ]; then
@@ -59,40 +60,40 @@ miner_start() {
     ui_err "Belum ada miner yang didukung untuk koin ini."; ui_pause; return
   fi
   if ! command -v "$COIN_MINER" >/dev/null 2>&1; then
-    ui_err "$COIN_MINER belum terpasang. Pasang lewat menu Update > Pasang miner."
+    ui_err "$COIN_MINER belum terpasang. Pasang lewat menu Update > Miner."
     ui_pause; return
   fi
 
   # --- wallet ---
   WALLET="$(wallet_get "$COIN_SYMBOL")"
   if [ -z "$WALLET" ]; then
-    read -rp "Alamat wallet $COIN_SYMBOL Anda: " WALLET
+    ui_ask WALLET "Alamat wallet $COIN_SYMBOL"
     if ! wallet_valid "$WALLET"; then ui_err "Alamat tidak valid."; ui_pause; return; fi
     wallet_set "$COIN_SYMBOL" "$WALLET"
+    ui_ok "Wallet disimpan."
   else
-    ui_info "Wallet: $WALLET  (ubah lewat menu Wallet)"
+    ui_info "Wallet: $(ui_short "$WALLET")  (ubah di menu Wallet)"
   fi
 
   # --- pool ---
   local p
-  read -rp "Pool host:port [${COIN_POOL_DEFAULT:-wajib diisi}]: " p
-  POOL="${p:-$COIN_POOL_DEFAULT}"
-  POOL="${POOL#stratum+tcp://}"
+  ui_ask p "Pool host:port" "$COIN_POOL_DEFAULT"
+  POOL="${p#stratum+tcp://}"
   if ! [[ "$POOL" =~ ^[A-Za-z0-9.-]+:[0-9]{2,5}$ ]]; then
     ui_err "Format pool harus host:port."; ui_pause; return
   fi
 
   # --- worker / thread / suhu ---
-  read -rp "Nama worker [hp]: " WORKER; WORKER="${WORKER:-hp}"
+  ui_ask WORKER "Nama worker" "hp"
   [[ "$WORKER" =~ ^[A-Za-z0-9_-]{1,20}$ ]] || { ui_err "Nama worker tidak valid."; ui_pause; return; }
 
   local cores def maxtemp guard=1
   cores="$(nproc 2>/dev/null || echo 2)"
   def=$(( cores > 1 ? cores / 2 : 1 ))
-  read -rp "Jumlah thread [$def]: " THREADS; THREADS="${THREADS:-$def}"
+  ui_ask THREADS "Jumlah thread (CPU $cores core)" "$def"
   [[ "$THREADS" =~ ^[0-9]{1,3}$ ]] && [ "$THREADS" -ge 1 ] || { ui_err "Thread tidak valid."; ui_pause; return; }
 
-  read -rp "Batas suhu baterai C [$MAX_TEMP_DEFAULT]: " maxtemp; maxtemp="${maxtemp:-$MAX_TEMP_DEFAULT}"
+  ui_ask maxtemp "Batas suhu baterai (C)" "$MAX_TEMP_DEFAULT"
   [[ "$maxtemp" =~ ^[0-9]{2,3}$ ]] || { ui_err "Suhu tidak valid."; ui_pause; return; }
 
   if ! command -v termux-battery-status >/dev/null 2>&1; then
@@ -104,12 +105,31 @@ miner_start() {
   CMD=()
   if ! miner_build_cmd || [ "${#CMD[@]}" -eq 0 ]; then ui_err "Gagal menyusun perintah miner."; ui_pause; return; fi
 
+  # --- ringkasan sebelum mulai ---
+  ui_head "MULAI MINING"
+  ui_kv "Koin"    "$COIN_NAME ($COIN_SYMBOL)" "$C_B"
+  ui_kv "Algo"    "$COIN_ALGO"
+  ui_kv "Pool"    "$POOL"
+  ui_kv "Wallet"  "$(ui_short "$WALLET")" "$C_G"
+  ui_kv "Worker"  "$WORKER"
+  ui_kv "Thread"  "$THREADS"
+  if [ "$guard" = 1 ]; then ui_kv "Suhu maks" "${maxtemp} C" "$C_Y"; else ui_kv "Suhu maks" "nonaktif" "$C_R"; fi
+  ui_bottom
   echo
-  ui_ok "Menjalankan: ${CMD[*]}"
-  ui_info "Tekan Ctrl+C untuk berhenti."
+  ui_ok "Mining dimulai. Tekan Ctrl+C untuk berhenti."
   echo
+
+  local t0 t1
+  t0="$(date +%s)"
   miner_run "$maxtemp" "$guard" "${CMD[@]}"
+  t1="$(date +%s)"
+
   echo
-  ui_ok "Mining berhenti."
+  ui_top
+  ui_title "MINING BERHENTI"
+  ui_mid
+  ui_kv "Koin"   "$COIN_SYMBOL" "$C_B"
+  ui_kv "Durasi" "$(ui_dur $((t1 - t0)))" "$C_C"
+  ui_bottom
   ui_pause
 }
