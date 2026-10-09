@@ -46,15 +46,16 @@ ui_blank() { ui_text ""; }
 
 # ---------- banner ----------
 ui_art() {
-  local -a g=(51 45 39 33) a=(
-    " __  __ ___ _  _ ___ _  _  ___ "
-    "|  \\/  |_ _| \\| |_ _| \\| |/ __|"
-    "| |\\/| || || .\` || || .\` | (_ |"
-    "|_|  |_|___|_|\\_|___|_|\\_|\\___|"
-  )
-  local i
-  for i in 0 1 2 3; do
-    printf '   \e[1m\e[38;5;%sm%s%s\n' "${g[$i]}" "${a[$i]}" "$C_0"
+  # Huruf blok 5 baris, lebar 40 kolom, di-center terhadap kotak (44 kolom)
+  local -a g=(51 45 39 33 27)
+  local -a M=("█   █" "██ ██" "█ █ █" "█   █" "█   █")
+  local -a I=("█████" "  █  " "  █  " "  █  " "█████")
+  local -a N=("█   █" "██  █" "█ █ █" "█  ██" "█   █")
+  local -a G=(" ████" "█    " "█  ██" "█   █" " ████")
+  local i line pad=$(( (UI_W + 2 - 40) / 2 ))
+  for i in 0 1 2 3 4; do
+    line="${M[$i]}  ${I[$i]}  ${N[$i]}  ${I[$i]}  ${N[$i]}  ${G[$i]}"
+    printf '%*s\e[1m\e[38;5;%sm%s%s\n' "$pad" "" "${g[$i]}" "$line" "$C_0"
     [ "$1" = "slow" ] && sleep 0.07
   done
 }
