@@ -1,23 +1,26 @@
 about_menu() {
-  ui_banner
-  echo "${C_B}== ABOUT ==${C_0}"
-  echo " $APP_NAME v$APP_VERSION"
-  echo " Pembuat : $APP_AUTHOR"
-  echo " Repo    : $REPO_URL"
-  echo
-  echo " Launcher menu untuk miner open-source (xmrig, cpuminer,"
-  echo " ccminer) di Termux. Wallet & pool sepenuhnya milik Anda."
-  echo " Aplikasi ini TIDAK punya dev-fee atau wallet tersembunyi."
-  echo
-  echo " Akun bersifat LOKAL (di perangkat ini, tanpa server)."
-  echo " Data: $DATA_DIR"
-  echo
-  ui_warn "Mining di HP umumnya tidak menguntungkan, membuat baterai"
-  ui_warn "dan CPU panas. Jangan dijalankan sambil mengisi daya di"
-  ui_warn "tempat tertutup. Gunakan dengan risiko sendiri."
-  echo
-  ui_info "Ingin menambah koin? Cukup buat 1 file di folder coins/"
-  ui_info "lalu kirim Pull Request. Lihat CONTRIBUTING.md"
-  echo
+  ui_head "ABOUT"
+  ui_kv "Aplikasi" "$APP_NAME v$APP_VERSION" "$C_B"
+  ui_kv "Pembuat"  "$APP_AUTHOR" "$C_C"
+  ui_kv "Repo"     "github.com/djunekz/mining" "$C_L"
+  local tilde="~"; ui_kv "Data"     "${DATA_DIR/#$HOME/$tilde}"
+  ui_mid
+  ui_text "Launcher untuk miner open-source"
+  ui_text "(xmrig, cpuminer, ccminer) di Termux."
+  ui_text "Wallet & pool 100% milik kamu."
+  ui_text "TANPA dev-fee / wallet tersembunyi." "$C_G"
+  ui_blank
+  ui_text "Akun bersifat LOKAL (tanpa server)."
+  ui_mid
+  ui_text "PERINGATAN" "$C_Y"
+  ui_text "Mining di HP umumnya tidak untung &" "$C_Y"
+  ui_text "membuat baterai/CPU panas. Jangan" "$C_Y"
+  ui_text "dijalankan sambil nge-charge di" "$C_Y"
+  ui_text "tempat tertutup. Risiko ditanggung" "$C_Y"
+  ui_text "pengguna." "$C_Y"
+  ui_mid
+  ui_text "Tambah koin = 1 file di folder coins/" "$C_C"
+  ui_text "Lihat CONTRIBUTING.md" "$C_D"
+  ui_bottom
   ui_pause
 }
