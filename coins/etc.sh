@@ -1,5 +1,5 @@
 COIN_SYMBOL="ETC"
-COIN_NAME="Ethereum Classic"
+COIN_NAME="Eth. Classic"
 COIN_ALGO="etchash"
 COIN_MINER="none"
 COIN_POOL_DEFAULT=""
