@@ -1,12 +1,12 @@
-# Konfigurasi proyek - ubah sesuai repo Anda
-APP_NAME="TermuxMiner"
+# Konfigurasi proyek MINING
+APP_NAME="MINING"
 APP_AUTHOR="Djunekz"
 REPO_URL="https://github.com/djunekz/mining"
 APP_VERSION="$(cat "$ROOT/VERSION" 2>/dev/null || echo 0.0.0)"
 
 # Data pengguna (akun, wallet) disimpan DI LUAR folder repo
 # supaya "git pull" tidak menimpa data.
-DATA_DIR="${MINING_HOME:-$HOME/.termuxminer}"
+DATA_DIR="${MINING_HOME:-$HOME/.mining}"
 
 # Batas suhu baterai (derajat C) default; mining dihentikan jika terlewati
 MAX_TEMP_DEFAULT=42
