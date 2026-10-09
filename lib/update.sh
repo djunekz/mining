@@ -1,16 +1,17 @@
 # Update aplikasi via git + pasang miner
 
 update_menu() {
+  local c
   while true; do
-    ui_banner
-    echo "${C_B}== UPDATE ==${C_0}"
-    echo " Versi terpasang: $APP_VERSION"
+    ui_head "UPDATE"
+    ui_kv "Versi" "$APP_VERSION" "$C_G"
+    ui_mid
+    ui_row 1 "Update" "Cek & tarik pembaruan"
+    ui_row 2 "Miner"  "Pasang / cek miner"
+    ui_row 0 "Kembali" "Ke menu utama"
+    ui_bottom
     echo
-    echo " 1. Cek & update aplikasi"
-    echo " 2. Pasang / cek miner"
-    echo " 0. Kembali"
-    echo
-    read -rp "Pilih: " c || exit 0
+    ui_ask c "Pilih"
     case "$c" in
       1) update_app ;;
       2) install_menu ;;
@@ -21,10 +22,10 @@ update_menu() {
 
 update_app() {
   echo
-  if ! command -v git >/dev/null 2>&1; then ui_err "git belum terpasang (menu Pasang miner > 1)."; ui_pause; return; fi
+  if ! command -v git >/dev/null 2>&1; then ui_err "git belum terpasang (Update > Miner > Dasar)."; ui_pause; return; fi
   if [ ! -d "$ROOT/.git" ]; then
-    ui_warn "Folder ini bukan hasil git clone, jadi tidak bisa di-update otomatis."
-    echo " Pasang ulang dengan:  git clone $REPO_URL"
+    ui_warn "Folder ini bukan hasil git clone, tidak bisa di-update otomatis."
+    ui_info "Pasang ulang:  git clone $REPO_URL"
     ui_pause; return
   fi
   ui_info "Memeriksa pembaruan..."
@@ -35,7 +36,7 @@ update_app() {
     ui_ok "Sudah versi terbaru."; ui_pause; return
   fi
   ui_warn "Ada $behind pembaruan:"
-  git -C "$ROOT" log --oneline 'HEAD..@{u}' | head -10
+  git -C "$ROOT" log --oneline 'HEAD..@{u}' | head -10 | sed 's/^/    /'
   echo
   if ui_confirm "Update sekarang?"; then
     if git -C "$ROOT" pull --ff-only; then
