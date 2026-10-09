@@ -4,11 +4,11 @@ Multi-coin miner launcher untuk **Termux**: satu menu, 30 koin, dan
 **satu file per koin** sehingga kontributor cukup menambah satu file.
 
 ```
-  █   █  █████  █   █  █████  █   █   ████
-  ██ ██    █    ██  █    █    ██  █  █
-  █ █ █    █    █ █ █    █    █ █ █  █  ██
-  █   █    █    █  ██    █    █  ██  █   █
-  █   █  █████  █   █  █████  █   █   ████
+  #   #  #####  #   #  #####  #   #   ####
+  ## ##    #    ##  #    #    ##  #  #
+  # # #    #    # # #    #    # # #  #  ##
+  #   #    #    #  ##    #    #  ##  #   #
+  #   #  #####  #   #  #####  #   #   ####
       M U L T I - C O I N   M I N E R
 ```
 
@@ -37,12 +37,12 @@ Lalu buka **4. Update > 2. Miner** untuk memasang xmrig dan miner lainnya.
 ## Struktur
 
 ```
-mining.sh              menu utama
-config.sh              nama, repo, batas suhu, dsb.
+mining.sh            menu utama
+config.sh            nama, repo, batas suhu
 VERSION
-lib/                   ui auth coins install miner wallet referral update about
-coins/                 SATU FILE = SATU KOIN  (xmr.sh, vrsc.sh, ...)
-tools/check-coins.sh   validator file koin
+lib/                 modul (ui, auth, miner, ...)
+coins/               1 FILE = 1 KOIN (xmr.sh, ...)
+tools/check-coins.sh validator file koin
 ```
 
 ## Menambah koin (kontributor)
