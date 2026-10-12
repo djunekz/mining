@@ -13,7 +13,7 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
-_Belum ada perubahan sejak rilis terakhir._
+_Rilis pertama belum dibuat. Perubahan akan dicatat setelah tag pertama ada._
 
 <!-- changelog:unreleased:end -->
 
