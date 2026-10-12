@@ -20,7 +20,7 @@ jobs:
     name: Sintaks & ShellCheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: bash -n (cek sintaks)
         run: |
@@ -37,7 +37,7 @@ jobs:
     name: Validasi koin
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: check-coins
         run: |
           bash tools/check-coins.sh
@@ -47,7 +47,7 @@ jobs:
     name: Format VERSION
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: VERSION harus semver X.Y.Z
         run: |
           v="$(tr -d '[:space:]' < VERSION)"
@@ -64,7 +64,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Versi bash
         run: bash --version | head -1
       - name: tests/smoke.sh

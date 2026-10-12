@@ -15,7 +15,7 @@ jobs:
     name: Pasang label
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@v7
         with:
           configuration-path: .github/labeler-rules.yml
           sync-labels: true
