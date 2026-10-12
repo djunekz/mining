@@ -1,0 +1,105 @@
+name: Release
+
+# Auto release:
+#  - push ke main  -> versi dihitung otomatis dari Conventional Commits
+#                     (feat = minor, fix/lainnya = patch, "!" = major;
+#                      docs/ci/chore/test saja = tidak ada rilis)
+#  - manual        -> pilih auto / patch / minor / major
+#
+# Menonaktifkan rilis otomatis:
+#  - tambahkan [skip release] di pesan commit, atau
+#  - buat Repository variable  AUTO_RELEASE = false
+#    (Settings > Secrets and variables > Actions > Variables)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Jenis kenaikan versi"
+        type: choice
+        options: [auto, patch, minor, major]
+        default: auto
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-write
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Buat rilis
+    if: >-
+      ${{ !github.event.repository.fork &&
+      (github.event_name == 'workflow_dispatch' ||
+      (vars.AUTO_RELEASE != 'false' &&
+      !contains(github.event.head_commit.message, '[skip release]') &&
+      !startsWith(github.event.head_commit.message, 'chore(release)') &&
+      !startsWith(github.event.head_commit.message, 'chore(changelog)'))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Siapkan rilis (VERSION, CHANGELOG, RELEASE_NOTES)
+        id: prep
+        env:
+          MODE: ${{ inputs.bump || 'auto' }}
+        run: |
+          set +e
+          bash tools/release.sh "$MODE"
+          rc=$?
+          set -e
+          if [ "$rc" -eq 10 ]; then
+            echo "Tidak ada perubahan yang perlu dirilis."
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          [ "$rc" -eq 0 ] || exit "$rc"
+          echo "released=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit & tag
+        if: steps.prep.outputs.released == 'true'
+        env:
+          VERSION: ${{ steps.prep.outputs.version }}
+          TAG: ${{ steps.prep.outputs.tag }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add VERSION CHANGELOG.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(release): v$VERSION [skip ci]"
+            git push origin HEAD:main
+          fi
+          git tag -a "$TAG" -m "MINING $TAG"
+          git push origin "$TAG"
+
+      - name: Buat arsip rilis
+        if: steps.prep.outputs.released == 'true'
+        env:
+          VERSION: ${{ steps.prep.outputs.version }}
+          TAG: ${{ steps.prep.outputs.tag }}
+        run: |
+          git archive --format=tar.gz --prefix="mining-$VERSION/" -o "mining-$VERSION.tar.gz" "$TAG"
+          sha256sum "mining-$VERSION.tar.gz" > "mining-$VERSION.tar.gz.sha256"
+
+      - name: Publikasikan GitHub Release
+        if: steps.prep.outputs.released == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.prep.outputs.version }}
+          TAG: ${{ steps.prep.outputs.tag }}
+        run: |
+          gh release create "$TAG" \
+            --title "MINING $TAG" \
+            --notes-file RELEASE_NOTES.md \
+            --verify-tag \
+            --latest \
+            "mining-$VERSION.tar.gz" "mining-$VERSION.tar.gz.sha256"
+          echo "### Rilis $TAG dibuat" >> "$GITHUB_STEP_SUMMARY"
+          cat RELEASE_NOTES.md >> "$GITHUB_STEP_SUMMARY"

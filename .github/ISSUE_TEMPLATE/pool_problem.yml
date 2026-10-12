@@ -1,0 +1,41 @@
+name: Pool bermasalah
+description: Pool default suatu koin tidak bisa dihubungi atau sudah pindah
+title: "pool: "
+labels: ["coins", "pool-health", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Alamat pool bisa berubah. Workflow **Kesehatan Pool** memeriksa pool default tiap minggu,
+        tapi laporan manual tetap membantu.
+  - type: input
+    id: coin
+    attributes:
+      label: Koin
+      placeholder: "XMR"
+    validations:
+      required: true
+  - type: input
+    id: pool
+    attributes:
+      label: Pool yang bermasalah
+      placeholder: "pool.example.com:3333"
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Pesan error dari miner
+      render: shell
+  - type: input
+    id: replacement
+    attributes:
+      label: Pool pengganti (jika tahu)
+      description: Sertakan tautan pengumuman resmi pool/koin jika ada.
+      placeholder: "pool.baru.com:3333"
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Konfirmasi
+      options:
+        - label: Saya sudah mencoba dari jaringan lain (bukan hanya satu koneksi).

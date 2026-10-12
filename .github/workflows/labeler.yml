@@ -1,0 +1,21 @@
+name: Label PR
+
+# Memberi label otomatis berdasarkan file yang diubah (aturan: .github/labeler-rules.yml).
+# pull_request_target tanpa checkout kode PR; aturan dibaca dari branch dasar.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Pasang label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          configuration-path: .github/labeler-rules.yml
+          sync-labels: true

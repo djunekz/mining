@@ -1,0 +1,48 @@
+name: Sambutan
+
+# Menyapa kontributor pertama kali (issue maupun PR).
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  greet:
+    name: Sapa kontributor baru
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const isPR = !!context.payload.pull_request;
+            const item = context.payload.pull_request || context.payload.issue;
+            const first = ['FIRST_TIME_CONTRIBUTOR', 'FIRST_TIMER'];
+            if (!first.includes(item.author_association)) return;
+
+            const body = isPR
+              ? [
+                  `Terima kasih sudah mengirim PR pertamamu, @${item.user.login}! 🎉`,
+                  '',
+                  'Beberapa hal yang akan diperiksa otomatis:',
+                  '- Judul PR mengikuti [Conventional Commits](https://www.conventionalcommits.org/id/) (contoh: `feat(coins): tambah koin ABC`)',
+                  '- `bash tests/smoke.sh` dan `bash tools/check-coins.sh` lolos',
+                  '- Tidak ada alamat wallet/password di perubahanmu',
+                  '',
+                  `Panduan lengkap ada di [CONTRIBUTING.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md). Maintainer akan segera meninjau.`,
+                ]
+              : [
+                  `Terima kasih sudah membuat issue, @${item.user.login}! 🙌`,
+                  '',
+                  'Maintainer akan segera melihatnya. Sambil menunggu, pastikan laporanmu tidak memuat alamat wallet, password, atau data pribadi lain.',
+                ];
+
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: item.number,
+              body: body.join('\n'),
+            });

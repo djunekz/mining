@@ -1,0 +1,13 @@
+{
+  // Konfigurasi markdownlint-cli2 (dipakai workflow markdown-lint.yml)
+  "config": {
+    "default": true,
+    "MD013": false,                      // panjang baris bebas (tabel & tautan panjang)
+    "MD024": { "siblings_only": true },  // "### Added" boleh berulang antar rilis
+    "MD033": false,                      // HTML inline diizinkan (badge, <details>)
+    "MD040": false,                      // blok kode tanpa bahasa diizinkan (diagram menu)
+    "MD041": false,
+    "MD060": false                       // gaya tabel
+  },
+  "ignores": ["node_modules", "RELEASE_NOTES.md"]
+}

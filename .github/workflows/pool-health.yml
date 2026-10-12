@@ -1,0 +1,46 @@
+name: Kesehatan Pool
+
+# Tiap minggu memeriksa apakah pool default di file koin masih bisa dihubungi.
+# Jika ada yang gagal, dibuatkan (atau diperbarui) satu issue berlabel pool-health;
+# jika semua sudah pulih, issue itu ditutup otomatis.
+on:
+  schedule:
+    - cron: "0 2 * * 3" # tiap Rabu 09:00 WIB
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  pools:
+    name: Cek pool default
+    if: ${{ !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cek koneksi pool
+        id: check
+        run: |
+          set +e
+          bash tools/check-pools.sh pool-report.md
+          echo "rc=$?" >> "$GITHUB_OUTPUT"
+          cat pool-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Buat / perbarui / tutup issue
+        run: |
+          gh label create pool-health --color d93f0b --description "Pool default bermasalah" --force || true
+          existing="$(gh issue list --label pool-health --state open --json number --jq '.[0].number // empty')"
+          if [ "${{ steps.check.outputs.rc }}" != "0" ]; then
+            if [ -n "$existing" ]; then
+              gh issue comment "$existing" --body-file pool-report.md
+            else
+              gh issue create --title "Pool default tidak dapat dihubungi" \
+                --label pool-health --body-file pool-report.md
+            fi
+          elif [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Semua pool default sudah dapat dihubungi lagi. Ditutup otomatis."
+          fi

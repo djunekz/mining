@@ -1,1 +1,4 @@
 *.tmp
+RELEASE_NOTES.md
+pool-report.md
+node_modules/

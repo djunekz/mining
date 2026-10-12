@@ -1,5 +1,9 @@
 # MINING
 
+[![CI](https://github.com/djunekz/mining/actions/workflows/ci.yml/badge.svg)](https://github.com/djunekz/mining/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/djunekz/mining?display_name=tag)](https://github.com/djunekz/mining/releases)
+[![Changelog](https://img.shields.io/badge/changelog-CHANGELOG.md-blue)](CHANGELOG.md)
+
 Multi-coin miner launcher untuk **Termux**: satu menu, 30 koin, dan
 **satu file per koin** sehingga kontributor cukup menambah satu file.
 
@@ -37,17 +41,31 @@ Lalu buka **4. Update > 2. Miner** untuk memasang xmrig dan miner lainnya.
 ## Struktur
 
 ```
-mining.sh            menu utama
-config.sh            nama, repo, batas suhu
-VERSION
-lib/                 modul (ui, auth, miner, ...)
-coins/               1 FILE = 1 KOIN (xmr.sh, ...)
-tools/check-coins.sh validator file koin
+mining.sh         menu utama
+config.sh         nama, repo, batas suhu
+VERSION           versi (dikelola otomatis oleh rilis)
+CHANGELOG.md      riwayat perubahan (otomatis)
+lib/              modul (ui, auth, miner, ...)
+coins/            1 FILE = 1 KOIN (xmr.sh, ...)
+tools/            validator koin, generator changelog & rilis
+tests/            smoke test
+docs/             daftar koin (COINS.md) & dokumentasi otomasi
+.github/          workflows, template issue & PR
 ```
 
 ## Menambah koin (kontributor)
 
 Cukup 1 file di `coins/`. Lihat [CONTRIBUTING.md](CONTRIBUTING.md).
+Daftar koin saat ini: [docs/COINS.md](docs/COINS.md).
+
+## Dokumen lain
+
+- [CHANGELOG.md](CHANGELOG.md): riwayat perubahan
+- [CONTRIBUTING.md](CONTRIBUTING.md): cara berkontribusi dan format commit
+- [docs/AUTOMATION.md](docs/AUTOMATION.md): workflow, auto changelog, auto release
+- [SECURITY.md](SECURITY.md): melaporkan celah keamanan
+- [SUPPORT.md](SUPPORT.md): masalah umum dan cara minta bantuan
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md): kode etik
 
 ## Yang perlu diketahui
 

@@ -1,0 +1,22 @@
+# Kategori untuk tombol "Generate release notes" di GitHub (rilis manual).
+# Rilis otomatis memakai catatan dari CHANGELOG.md (tools/changelog.sh).
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+    authors:
+      - dependabot
+      - github-actions
+  categories:
+    - title: "Perubahan besar"
+      labels: ["breaking"]
+    - title: "Koin"
+      labels: ["coins"]
+    - title: "Fitur"
+      labels: ["enhancement", "feature"]
+    - title: "Perbaikan bug"
+      labels: ["bug"]
+    - title: "Dokumentasi"
+      labels: ["documentation"]
+    - title: "Lainnya"
+      labels: ["*"]

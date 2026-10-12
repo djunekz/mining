@@ -1,0 +1,61 @@
+name: Cek PR Koin
+
+# Berjalan hanya jika PR menyentuh folder coins/ atau validatornya.
+on:
+  pull_request:
+    paths:
+      - "coins/**"
+      - "tools/check-coins.sh"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coins-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validasi file koin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: check-coins (validasi + guard isi file)
+        run: bash tools/check-coins.sh
+
+      - name: Ringkasan perubahan koin
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          {
+            echo "### Perubahan di folder coins/"
+            echo
+            git diff --name-status "$BASE"...HEAD -- coins/ | while read -r st f; do
+              case "$st" in
+                A) echo "- koin baru: \`$f\`" ;;
+                M) echo "- diubah: \`$f\`" ;;
+                D) echo "- dihapus: \`$f\`" ;;
+                *) echo "- $st \`$f\`" ;;
+              esac
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: PR koin sebaiknya hanya menyentuh coins/
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          other="$(git diff --name-only "$BASE"...HEAD | grep -v '^coins/' | grep -v '^docs/COINS.md$' || true)"
+          if [ -n "$other" ]; then
+            echo "::notice::PR ini juga mengubah file di luar coins/. Idealnya PR koin hanya berisi file koin."
+            printf '%s\n' "$other" | sed 's/^/  - /'
+          fi
+
+      - name: Koin yang memakai coin_cmd() perlu review manual
+        run: |
+          hits="$(grep -ls '^coin_cmd()' coins/*.sh || true)"
+          if [ -n "$hits" ]; then
+            for f in $hits; do echo "::warning file=$f::memakai coin_cmd(); reviewer wajib memeriksa baris CMD=(...)"; done
+          fi

@@ -1,0 +1,47 @@
+name: Usul fitur
+description: Ide untuk fitur atau perbaikan tampilan
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ingin menambah **koin baru**? Pakai template **Permintaan koin** supaya lebih cepat diproses.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah / kebutuhan
+      description: Apa yang sulit dilakukan sekarang?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Usulan solusi
+      description: Bagaimana sebaiknya fitur ini bekerja? Sketsa menu boleh.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatif yang sudah dipertimbangkan
+  - type: dropdown
+    id: area
+    attributes:
+      label: Bagian terkait
+      options:
+        - Menu / tampilan
+        - Akun (login, registrasi, referral)
+        - Wallet
+        - Mining
+        - Update
+        - Tooling / CI
+        - Lainnya
+    validations:
+      required: true
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Kontribusi
+      options:
+        - label: Saya bersedia membuat Pull Request untuk fitur ini.

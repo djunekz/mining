@@ -1,0 +1,82 @@
+name: Permintaan koin
+description: Usul koin baru untuk ditambahkan (cukup 1 file di folder coins/)
+title: "coin: "
+labels: ["coins", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Menambah koin hanya butuh **satu file** di `coins/`. Kamu bisa langsung
+        [membuat PR sendiri](https://github.com/djunekz/mining/blob/main/CONTRIBUTING.md)
+        atau minta maintainer lewat form ini.
+
+        Hanya koin yang **bisa ditambang CPU** dengan miner yang didukung (`xmrig`, `cpuminer`, `ccminer`)
+        yang praktis di HP.
+  - type: input
+    id: name
+    attributes:
+      label: Nama koin
+      placeholder: "Monero"
+    validations:
+      required: true
+  - type: input
+    id: symbol
+    attributes:
+      label: Simbol
+      placeholder: "XMR"
+    validations:
+      required: true
+  - type: input
+    id: algo
+    attributes:
+      label: Algoritma
+      description: Nama algoritma menurut miner.
+      placeholder: "rx/0"
+    validations:
+      required: true
+  - type: dropdown
+    id: miner
+    attributes:
+      label: Miner yang mendukung
+      options:
+        - xmrig
+        - cpuminer
+        - ccminer
+        - Lainnya / belum tahu
+    validations:
+      required: true
+  - type: input
+    id: website
+    attributes:
+      label: Situs resmi koin
+      placeholder: "https://"
+    validations:
+      required: true
+  - type: input
+    id: pool
+    attributes:
+      label: Pool publik yang sah (host:port)
+      description: Pool komunitas yang dikenal. Jangan pool yang tidak jelas pemiliknya.
+      placeholder: "pool.example.com:3333"
+  - type: dropdown
+    id: practical
+    attributes:
+      label: Praktis ditambang di HP (CPU)?
+      options:
+        - "Ya"
+        - "Tidak (butuh ASIC/GPU)"
+        - "Tidak tahu"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Catatan lain
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Konfirmasi
+      options:
+        - label: Koin ini belum ada di [daftar koin](https://github.com/djunekz/mining/blob/main/docs/COINS.md).
+          required: true
+        - label: Saya bersedia membuat PR file koinnya sendiri.
