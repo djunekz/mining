@@ -13,7 +13,14 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
-_Belum ada perubahan sejak rilis terakhir._
+### Fixed
+
+- **update:** bandingkan VERSION dengan rilis terbaru dan simpan perubahan lokal dengan stash ([`9dd7b57`](https://github.com/djunekz/mining/commit/9dd7b57))
+- **install:** kompilasi xmrig dari sumber karena tidak ada di repo Termux ([`1ffd09f`](https://github.com/djunekz/mining/commit/1ffd09f))
+- **update:** bandingkan VERSION dengan rilis terbaru dan simpan perubahan lokal dengan stash ([`83e1696`](https://github.com/djunekz/mining/commit/83e1696))
+- **install:** kompilasi xmrig dari sumber karena tidak ada di repo Termux ([`ebf8699`](https://github.com/djunekz/mining/commit/ebf8699))
+- **update:** bandingkan VERSION dengan rilis terbaru dan simpan perubahan lokal dengan stash ([`251f12d`](https://github.com/djunekz/mining/commit/251f12d))
+- **install:** kompilasi xmrig dari sumber karena tidak ada di repo Termux ([`ceb6e15`](https://github.com/djunekz/mining/commit/ceb6e15))
 
 <!-- changelog:unreleased:end -->
 
