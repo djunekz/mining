@@ -9,12 +9,14 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
+# salinan repo supaya tes yang menambah koin tidak mengotori repo asli
 cp -r "$REPO" "$TMP/repo"
 rm -rf "$TMP/repo/.git"
 export HOME="$TMP/home"; mkdir -p "$HOME"
 export TERM=xterm LC_ALL=C.UTF-8
 unset MINING_HOME
 
+# miner & termux-api palsu
 mkdir -p "$TMP/bin"
 printf '#!/bin/sh\necho "FAKE_MINER $*"\nsleep 1\n' > "$TMP/bin/xmrig"
 printf '#!/bin/sh\necho "{ \\"temperature\\": 30.0 }"\n'  > "$TMP/bin/termux-battery-status"
@@ -122,6 +124,7 @@ check "tanpa rilis & tanpa commit baru: terbaru" "Sudah versi terbaru" "$out"
 out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
 check "versi sama dengan rilis: terbaru" "Sudah versi terbaru" "$out"
 
+# kasus yang dilaporkan pengguna: VERSION lokal diturunkan, rilis di repo lebih baru
 echo "0.1.9" > "$UP/app/VERSION"
 out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
 check "VERSION turun: tidak lagi dianggap terbaru" "lebih lama dari rilis v$APPV" "$out"
@@ -134,6 +137,7 @@ check "update dijalankan"            "Update selesai"        "$out"
 [ "$(tr -d '[:space:]' < "$UP/app/VERSION")" = "$APPV" ] && ok "VERSION kembali ke versi repo" || bad "VERSION kembali ke versi repo"
 [ "$(git -C "$UP/app" stash list | wc -l)" -eq 1 ] && ok "perubahan lokal disimpan di stash" || bad "perubahan lokal disimpan di stash"
 
+# rilis baru di remote
 git clone -q "$UP/remote.git" "$UP/dev"
 ( cd "$UP/dev" && echo "9.9.9" > VERSION && git "${GI[@]}" commit -qam "chore(release): v9.9.9" \
   && git tag v9.9.9 && git push -q origin main v9.9.9 )
