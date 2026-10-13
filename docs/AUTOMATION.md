@@ -69,13 +69,46 @@ tools/release.sh auto --dry-run
 ## Pengaturan repo yang diperlukan (sekali saja)
 
 1. **Settings > Actions > General > Workflow permissions** pilih **Read and write permissions**.
-2. Jika `main` dilindungi (branch protection), izinkan `github-actions[bot]` untuk push
-   (bypass), atau workflow `changelog`, `auto-release`, dan `coins-doc` tidak bisa commit.
-   Alternatifnya biarkan `main` tanpa proteksi push langsung.
+2. **Jika `main` dilindungi** (ruleset atau branch protection dengan "wajib Pull Request" atau
+   "wajib status check"), workflow `changelog`, `auto-release`, dan `coins-doc` gagal dengan
+   `GH013: Repository rule violations ... Changes must be made through a pull request`.
+   `github-actions[bot]` (pemilik `GITHUB_TOKEN`) tidak bisa dimasukkan ke daftar bypass,
+   jadi pakai token milik pemilik repo lewat secret `RELEASE_TOKEN` (lihat bagian di bawah).
 3. (Opsional) Branch protection: wajibkan status check **CI OK**, **Validasi file koin**,
    dan **Periksa format judul**.
 4. (Opsional) **Settings > Security**: aktifkan **Private vulnerability reporting** dan **Dependabot alerts**.
 5. Commit yang diberi `[skip ci]` tidak memicu workflow lain, itulah yang mencegah perulangan tak berujung.
+
+## Secret `RELEASE_TOKEN` (wajib jika `main` dilindungi)
+
+Workflow yang commit ke `main` memakai `secrets.RELEASE_TOKEN` bila ada, dan `GITHUB_TOKEN`
+bila tidak. Dengan token milik pemilik repo, push dilakukan atas nama pemilik, yang boleh
+melewati aturan (log push biasa akan menampilkan `Bypassed rule violations`).
+
+Cara membuatnya (bisa dari browser HP):
+
+1. GitHub: foto profil, **Settings**, **Developer settings**, **Personal access tokens**,
+   **Fine-grained tokens**, **Generate new token**.
+2. Isi nama (mis. `mining-release`), **Expiration** (mis. 1 tahun), **Repository access**:
+   *Only select repositories*, pilih repo ini.
+3. **Repository permissions**: **Contents** = *Read and write* (Metadata otomatis *Read*). Klik **Generate token**
+   dan salin tokennya (hanya tampil sekali).
+4. Di repo ini: **Settings**, **Secrets and variables**, **Actions**, **New repository secret**.
+   Nama: `RELEASE_TOKEN`, isi: token tadi.
+5. Pastikan aturan `main` punya bypass untuk pemilik (**Settings**, **Rules**, **Rulesets**, ruleset
+   `main`, **Bypass list**, tambahkan *Repository admin*).
+6. Jalankan ulang: **Actions**, workflow **Release** atau **Changelog**, **Run workflow**.
+   (Menekan *Re-run jobs* pada run lama memakai file workflow lama, jadi hasilnya sama-sama gagal.)
+
+Catatan:
+
+- Jaga token seperti password. Jika bocor, hapus di halaman tokenmu dan buat ulang.
+- Setelah token kedaluwarsa, workflow gagal lagi dengan pesan yang sama; buat token baru dan
+  perbarui secretnya.
+- Alternatif yang lebih rapi untuk tim: buat GitHub App, masukkan ke bypass list, dan ambil tokennya
+  dengan `actions/create-github-app-token`.
+- Alternatif paling sederhana untuk proyek sendirian: hapus aturan "Require a pull request" dan
+  "Require status checks" dari ruleset `main`. Konsekuensinya push langsung tidak diperiksa CI.
 
 ## Keamanan workflow
 
