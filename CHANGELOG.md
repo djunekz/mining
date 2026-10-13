@@ -13,6 +13,12 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
+_Belum ada perubahan sejak rilis terakhir._
+
+<!-- changelog:unreleased:end -->
+
+## [1.0.1] - 2026-10-13
+
 ### Fixed
 
 - **update:** bandingkan VERSION dengan rilis terbaru dan simpan perubahan lokal dengan stash ([`9dd7b57`](https://github.com/djunekz/mining/commit/9dd7b57))
@@ -21,8 +27,6 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - **install:** kompilasi xmrig dari sumber karena tidak ada di repo Termux ([`ebf8699`](https://github.com/djunekz/mining/commit/ebf8699))
 - **update:** bandingkan VERSION dengan rilis terbaru dan simpan perubahan lokal dengan stash ([`251f12d`](https://github.com/djunekz/mining/commit/251f12d))
 - **install:** kompilasi xmrig dari sumber karena tidak ada di repo Termux ([`ceb6e15`](https://github.com/djunekz/mining/commit/ceb6e15))
-
-<!-- changelog:unreleased:end -->
 
 ## [1.0.0] - 2026-10-09
 
@@ -44,5 +48,6 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Template issue (bug, fitur, koin baru, pool bermasalah) dan template PR (umum dan koin baru).
 - Dokumen proyek: `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, `docs/AUTOMATION.md`.
 
-[Unreleased]: https://github.com/djunekz/mining/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/djunekz/mining/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/djunekz/mining/releases/tag/v1.0.1
 [1.0.0]: https://github.com/djunekz/mining/releases/tag/v1.0.0
