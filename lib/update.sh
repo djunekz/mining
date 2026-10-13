@@ -28,12 +28,10 @@ update_menu() {
 
 _g() { git -C "$ROOT" "$@"; }
 
-# true jika versi $1 lebih lama dari $2 (keduanya X.Y.Z)
 _ver_lt() {
   [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ]
 }
 
-# Tarik perubahan; tanpa upstream, pakai branch yang sedang aktif
 _upd_pull() {
   if _g rev-parse --abbrev-ref '@{u}' >/dev/null 2>&1; then
     _g pull --ff-only --quiet
@@ -65,7 +63,6 @@ update_app() {
   fi
   dirty="$(_g status --porcelain --untracked-files=no 2>/dev/null)"
 
-  # ---- ringkasan ----
   ui_head "CEK UPDATE"
   ui_kv "Terpasang" "v$APP_VERSION" "$C_C"
   if [ -n "$latest" ]; then ui_kv "Terbaru" "v$latest" "$C_G"; else ui_kv "Terbaru" "(belum ada rilis)" "$C_D"; fi
@@ -74,7 +71,6 @@ update_app() {
   ui_bottom
   echo
 
-  # ---- putusan ----
   if [ -n "$latest" ] && _ver_lt "$cur" "$latest"; then
     need=1; reason="Versimu (v$APP_VERSION) lebih lama dari rilis v$latest."
   fi
