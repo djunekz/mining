@@ -40,11 +40,14 @@ jobs:
       !startsWith(github.event.head_commit.message, 'chore(changelog)'))) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
           fetch-tags: true
+          # Jika main dilindungi ruleset (wajib PR / wajib status check), github-actions[bot]
+          # tidak bisa push. Isi secret RELEASE_TOKEN (lihat docs/AUTOMATION.md).
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - name: Siapkan rilis (VERSION, CHANGELOG, RELEASE_NOTES)
         id: prep
@@ -74,7 +77,10 @@ jobs:
           git add VERSION CHANGELOG.md
           if ! git diff --cached --quiet; then
             git commit -m "chore(release): v$VERSION [skip ci]"
-            git push origin HEAD:main
+            git push origin HEAD:main || {
+              echo "::error::Push ke main ditolak (ruleset/branch protection). Isi secret RELEASE_TOKEN, lihat docs/AUTOMATION.md."
+              exit 1
+            }
           fi
           git tag -a "$TAG" -m "MINING $TAG"
           git push origin "$TAG"
