@@ -11,9 +11,11 @@ DATA_DIR="${MINING_HOME:-$HOME/.mining}"
 # Batas suhu baterai (derajat C) default; mining dihentikan jika terlewati
 MAX_TEMP_DEFAULT=42
 
-# Donasi bawaan xmrig ke pengembang xmrig (persen waktu mining). 0 = nonaktif.
+# Donasi bawaan xmrig ke pengembang xmrig (persen waktu mining).
 # Ditulis eksplisit di sini supaya transparan; aplikasi ini sendiri TIDAK
-# memiliki dev-fee atau wallet tersembunyi.
+# memiliki dev-fee atau wallet tersembunyi. Pada xmrig resmi batas minimumnya
+# 1% (kMinimumDonateLevel di src/donate.h), jadi nilai di bawah 1 tidak
+# dijamin menonaktifkannya. xmrig dikompilasi dari sumber resmi tanpa patch.
 XMRIG_DONATE=1
 
 # Tipe miner yang dikenali oleh file koin
