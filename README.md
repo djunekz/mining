@@ -25,7 +25,11 @@ cd mining
 bash mining.sh
 ```
 
-Lalu buka **4. Update > 2. Miner** untuk memasang xmrig dan miner lainnya.
+Lalu buka **4. Update > 2. Miner**:
+
+1. **Dasar** untuk `termux-api`, `curl`, dan `git`.
+2. **xmrig**: dikompilasi dari sumber resminya (xmrig tidak ada di repo paket Termux,
+   jadi `pkg install xmrig` selalu gagal). Butuh sekitar 1 GB ruang kosong dan 10-30 menit.
 
 ## Menu
 
@@ -75,8 +79,11 @@ Daftar koin saat ini: [docs/COINS.md](docs/COINS.md).
 - **Referral itu pencatatan lokal**, bukan program komisi. Tidak ada hadiah otomatis
   dan tidak ada yang mengubah wallet/pool mining siapa pun.
 - **Tanpa dev-fee.** Wallet & pool 100% milik kamu. Catatan: xmrig sendiri
-  menyumbang 1% ke pengembangnya secara default; atur di `config.sh`
-  (`XMRIG_DONATE`, 0 untuk mematikan).
+  menyumbang 1% ke pengembangnya secara default dan batas minimumnya 1% pada
+  versi resmi (`XMRIG_DONATE` di `config.sh`).
+- **Menu Update** membandingkan file `VERSION` dengan rilis (tag) terbaru di GitHub
+  dan juga memeriksa commit baru. Perubahan lokal pada file yang dilacak git
+  disimpan sementara dengan `git stash`, tidak dibuang.
 - **Mining di HP umumnya tidak menguntungkan** dan memanaskan baterai/CPU.
   Pengaman suhu otomatis butuh `termux-api` (+ aplikasi Termux:API dari F-Droid).
 - Koin bertanda `!` (BTC, LTC, DOGE, dst.) butuh ASIC/GPU, tidak praktis di HP.

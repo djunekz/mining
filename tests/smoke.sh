@@ -70,6 +70,92 @@ echo "== validasi input mining"
 out="$(printf '%s\n' 1 1 tester secret1 "" "$IDX" "bukan-pool" 0 0 | run)"
 check "pool tidak valid ditolak"     "Format pool harus host:port" "$out"
 
+echo "== pasang xmrig (pkg/git/cmake/make palsu)"
+GIT_REAL="$(command -v git)"
+IB="$TMP/ibin"; mkdir -p "$IB" "$TMP/prefix/bin"
+printf '#!/bin/sh\necho "FAKE_PKG $*"\n' > "$IB/pkg"
+cat > "$IB/git" <<EOF
+#!/bin/sh
+case "\$1" in
+  ls-remote) printf 'a\trefs/tags/v6.9.0\nb\trefs/tags/v6.21.0\nc\trefs/tags/v6.22.2\nd\trefs/tags/v6.22.2-rc1\n' ;;
+  clone) for last; do :; done; mkdir -p "\$last"; echo "\$*" > "\$TMP_CLONE_LOG" ;;
+  *) exec "$GIT_REAL" "\$@" ;;
+esac
+EOF
+printf '#!/bin/sh\necho "$*" > "$TMP_CMAKE_LOG"\n' > "$IB/cmake"
+cat > "$IB/make" <<'EOF'
+#!/bin/sh
+[ -n "$FAKE_MAKE_FAIL" ] && { echo "make: *** error palsu"; exit 2; }
+printf '#!/bin/sh\necho "XMRig 6.22.2"\n' > xmrig; chmod +x xmrig
+EOF
+chmod +x "$IB/"*
+runi() {
+  TMP_CLONE_LOG="$TMP/clone.log" TMP_CMAKE_LOG="$TMP/cmake.log" PREFIX="$TMP/prefix" \
+    PATH="$IB:/usr/bin:/bin" timeout 60 bash "$TMP/repo/mining.sh" 2>&1 | strip
+}
+out="$(printf '%s\n' 4 2 2 y "" 0 0 0 | runi)"
+check "memilih rilis stabil terbaru (6.22.2, bukan 6.9.0/rc)" "Versi: v6.22.2" "$out"
+check "xmrig dipasang"               "xmrig terpasang: XMRig 6.22.2" "$out"
+grep -q -- '--branch v6.22.2' "$TMP/clone.log" && ok "clone memakai tag rilis" || bad "clone memakai tag rilis"
+grep -q -- '-DWITH_HWLOC=OFF' "$TMP/cmake.log" && ok "cmake: hwloc dimatikan" || bad "cmake: hwloc dimatikan"
+[ -x "$TMP/prefix/bin/xmrig" ] && ok "binary ada di PREFIX/bin" || bad "binary ada di PREFIX/bin"
+rm -f "$TMP/prefix/bin/xmrig"
+out="$(printf '%s\n' 4 2 2 y "" 0 0 0 | FAKE_MAKE_FAIL=1 runi)"
+check "kompilasi gagal dilaporkan"   "Kompilasi gagal"       "$out"
+[ ! -e "$TMP/prefix/bin/xmrig" ] && ok "tidak ada binary saat gagal" || bad "tidak ada binary saat gagal"
+out="$(printf '%s\n' 4 2 3 "" 0 0 0 | runi)"
+check "cpuminer: cara manual tampil" "BELUM DIUJI"           "$out"
+
+echo "== cek update (git sungguhan, remote lokal)"
+UP="$TMP/up"; mkdir -p "$UP"
+GI=(-c user.name=t -c user.email=t@t)
+git init -q --bare -b main "$UP/remote.git"
+cp -r "$REPO" "$UP/app"; rm -rf "$UP/app/.git"
+( cd "$UP/app" && git init -q -b main && git "${GI[@]}" add -A && git "${GI[@]}" commit -qm init \
+  && git remote add origin "$UP/remote.git" && git push -q -u origin main )
+APPV="$(tr -d '[:space:]' < "$UP/app/VERSION")"
+runapp() { timeout 60 bash "$UP/app/mining.sh" 2>&1 | strip; }
+
+out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
+check "tanpa rilis: terbaca"         "(belum ada rilis)"     "$out"
+check "tanpa rilis & tanpa commit baru: terbaru" "Sudah versi terbaru" "$out"
+
+( cd "$UP/app" && git tag "v$APPV" && git push -q origin "v$APPV" )
+out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
+check "versi sama dengan rilis: terbaru" "Sudah versi terbaru" "$out"
+
+# kasus yang dilaporkan pengguna: VERSION lokal diturunkan, rilis di repo lebih baru
+echo "0.1.9" > "$UP/app/VERSION"
+out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
+check "VERSION turun: tidak lagi dianggap terbaru" "lebih lama dari rilis v$APPV" "$out"
+out="$(printf '%s\n' 4 1 n "" 0 0 | runapp)"
+if grep -qF "Update selesai" <<<"$out"; then bad "jawab tidak: update tidak boleh jalan"; else ok "jawab tidak: update tidak jalan"; fi
+[ "$(tr -d '[:space:]' < "$UP/app/VERSION")" = "0.1.9" ] && ok "tanpa konfirmasi VERSION tidak disentuh" || bad "tanpa konfirmasi VERSION tidak disentuh"
+[ "$(git -C "$UP/app" stash list | wc -l)" -eq 0 ] && ok "tanpa konfirmasi tidak ada stash" || bad "tanpa konfirmasi tidak ada stash"
+out="$(printf '%s\n' 4 1 y 0 | runapp)"
+check "update dijalankan"            "Update selesai"        "$out"
+[ "$(tr -d '[:space:]' < "$UP/app/VERSION")" = "$APPV" ] && ok "VERSION kembali ke versi repo" || bad "VERSION kembali ke versi repo"
+[ "$(git -C "$UP/app" stash list | wc -l)" -eq 1 ] && ok "perubahan lokal disimpan di stash" || bad "perubahan lokal disimpan di stash"
+
+# rilis baru di remote
+git clone -q "$UP/remote.git" "$UP/dev"
+( cd "$UP/dev" && echo "9.9.9" > VERSION && git "${GI[@]}" commit -qam "chore(release): v9.9.9" \
+  && git tag v9.9.9 && git push -q origin main v9.9.9 )
+out="$(printf '%s\n' 4 1 y 0 | runapp)"
+check "rilis baru terdeteksi"        "lebih lama dari rilis v9.9.9" "$out"
+check "update ke rilis baru"         "Update selesai"        "$out"
+[ "$(tr -d '[:space:]' < "$UP/app/VERSION")" = "9.9.9" ] && ok "VERSION menjadi 9.9.9" || bad "VERSION menjadi 9.9.9"
+check "aplikasi restart dengan versi baru" "v9.9.9"          "$out"
+
+echo "10.0.0" > "$UP/app/VERSION"
+out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
+check "versi lokal lebih baru dari rilis" "lebih baru dari rilis terakhir" "$out"
+git -C "$UP/app" checkout -q -- VERSION
+
+git -C "$UP/app" remote set-url origin "$UP/tidak-ada.git"
+out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
+check "remote tidak terjangkau"      "Gagal terhubung ke repo" "$out"
+
 echo "== menambah koin cukup dengan 1 file"
 cat > "$TMP/repo/coins/new.sh" <<'EOF'
 COIN_SYMBOL="NEW"
