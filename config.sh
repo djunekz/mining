@@ -1,4 +1,3 @@
-# Konfigurasi proyek MINING
 APP_NAME="MINING"
 APP_AUTHOR="Djunekz"
 REPO_URL="https://github.com/djunekz/mining"

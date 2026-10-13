@@ -57,8 +57,6 @@ _inst() {
   ui_pause
 }
 
-# ---------- xmrig: kompilasi dari sumber ----------
-
 install_xmrig() {
   ui_head "PASANG XMRIG"
   if command -v xmrig >/dev/null 2>&1; then
@@ -99,7 +97,6 @@ install_xmrig() {
   ui_pause
 }
 
-# Rilis stabil xmrig terbaru (mis. v6.22.2) dari tag git; kosong bila gagal
 _xmrig_latest_tag() {
   git ls-remote --tags --refs "$XMRIG_REPO" 'v*' 2>/dev/null \
     | sed -E 's|.*refs/tags/||' \
@@ -112,7 +109,7 @@ _xmrig_build() {
   src="$work/xmrig"
   bindir="${PREFIX:-/usr/local}/bin"
   cores="$(nproc 2>/dev/null || echo 2)"
-  jobs=$(( cores > 4 ? 4 : cores ))   # batasi supaya HP tidak kehabisan RAM
+  jobs=$(( cores > 4 ? 4 : cores ))
 
   ui_info "[1/5] Memasang pustaka build..."
   pkg install -y git build-essential cmake libuv openssl || { ui_err "Gagal memasang pustaka build."; return 1; }
@@ -138,11 +135,9 @@ _xmrig_build() {
   ui_info "[5/5] Memasang ke $bindir ..."
   mkdir -p "$bindir"
   install -m 755 "$src/build/xmrig" "$bindir/xmrig" || { ui_err "Gagal menyalin xmrig ke $bindir."; return 1; }
-  rm -rf "$work"                      # hemat ruang: sumber dan hasil build tidak dibutuhkan lagi
+  rm -rf "$work"
   return 0
 }
-
-# ---------- cpuminer ----------
 
 install_cpuminer() {
   ui_head "PASANG CPUMINER"
