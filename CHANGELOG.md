@@ -13,7 +13,9 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
-_Belum ada perubahan sejak rilis terakhir._
+### Documentation
+
+- Revise automation documentation for protected main branch ([`312b298`](https://github.com/djunekz/mining/commit/312b298))
 
 <!-- changelog:unreleased:end -->
 
