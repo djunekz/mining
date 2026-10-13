@@ -22,9 +22,11 @@ jobs:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           ref: main
+          # Jika main dilindungi ruleset, isi secret RELEASE_TOKEN (lihat docs/AUTOMATION.md).
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - name: Generate
         run: bash tools/gen-coins-md.sh
@@ -39,4 +41,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/COINS.md
           git commit -m "docs(coins): update daftar koin [skip ci] [skip changelog]"
-          git push origin HEAD:main
+          git push origin HEAD:main || {
+            echo "::error::Push ke main ditolak (ruleset/branch protection). Isi secret RELEASE_TOKEN, lihat docs/AUTOMATION.md."
+            exit 1
+          }
