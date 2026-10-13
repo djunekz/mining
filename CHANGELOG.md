@@ -13,7 +13,9 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
-_Belum ada perubahan sejak rilis terakhir._
+### Changed
+
+- Update GitHub Actions workflow for COINS documentation ([`5ee7f41`](https://github.com/djunekz/mining/commit/5ee7f41))
 
 <!-- changelog:unreleased:end -->
 
