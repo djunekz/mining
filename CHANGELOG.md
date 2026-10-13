@@ -13,11 +13,15 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
+_Belum ada perubahan sejak rilis terakhir._
+
+<!-- changelog:unreleased:end -->
+
+## [1.0.4] - 2026-10-13
+
 ### Changed
 
 - Update GitHub Actions workflow for COINS documentation ([`5ee7f41`](https://github.com/djunekz/mining/commit/5ee7f41))
-
-<!-- changelog:unreleased:end -->
 
 ## [1.0.3] - 2026-10-13
 
@@ -62,7 +66,8 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Template issue (bug, fitur, koin baru, pool bermasalah) dan template PR (umum dan koin baru).
 - Dokumen proyek: `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, `docs/AUTOMATION.md`.
 
-[Unreleased]: https://github.com/djunekz/mining/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/djunekz/mining/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/djunekz/mining/releases/tag/v1.0.4
 [1.0.3]: https://github.com/djunekz/mining/releases/tag/v1.0.3
 [1.0.2]: https://github.com/djunekz/mining/releases/tag/v1.0.2
 [1.0.1]: https://github.com/djunekz/mining/releases/tag/v1.0.1
