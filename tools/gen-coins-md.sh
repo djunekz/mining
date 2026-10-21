@@ -10,7 +10,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 field() { grep -m1 "^$1=" "$2" | cut -d'"' -f2; }
 
 gen() {
-  local f n=0 rows="" sym name algo miner pool prac note
+  local f n=0 rows="" sym name algo miner pool prac note alt k
   for f in "$ROOT"/coins/*.sh; do
     [ -f "$f" ] || continue
     sym="$(field COIN_SYMBOL "$f")"
@@ -18,8 +18,10 @@ gen() {
     name="$(field COIN_NAME "$f")";        algo="$(field COIN_ALGO "$f")"
     miner="$(field COIN_MINER "$f")";      pool="$(field COIN_POOL_DEFAULT "$f")"
     prac="$(field COIN_PRACTICAL "$f")";   note="$(field COIN_NOTE "$f")"
+    alt="$(field COIN_POOL_ALT "$f")"
     n=$((n+1))
     [ "$prac" = "yes" ] && prac="ya" || prac="tidak"
+    if [ -n "$alt" ]; then k=0; for _p in $alt; do k=$((k+1)); done; pool="$pool (+$k cadangan)"; fi
     rows+="| $sym | $name | \`$algo\` | $miner | ${pool:--} | $prac | $note |"$'\n'
   done
   cat <<EOF

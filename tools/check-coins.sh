@@ -44,7 +44,7 @@ for f in "$ROOT"/coins/*.sh; do
 
   if [ -z "$err" ]; then
     out="$(
-      COIN_SYMBOL=""; COIN_NAME=""; COIN_ALGO=""; COIN_MINER=""; COIN_POOL_DEFAULT=""; COIN_NOTE=""; COIN_PRACTICAL=""
+      COIN_SYMBOL=""; COIN_NAME=""; COIN_ALGO=""; COIN_MINER=""; COIN_POOL_DEFAULT=""; COIN_POOL_ALT=""; COIN_NOTE=""; COIN_PRACTICAL=""
       # shellcheck disable=SC1090
       source "$f" 2>&1 || { echo "gagal di-source"; exit 0; }
       e=""
@@ -57,6 +57,10 @@ for f in "$ROOT"/coins/*.sh; do
       [ "${COIN_SYMBOL,,}" = "$base" ] || e+="nama file harus ${COIN_SYMBOL,,}.sh; "
       case "$COIN_SYMBOL$COIN_NAME$COIN_ALGO$COIN_POOL_DEFAULT$COIN_NOTE" in *"|"*) e+="jangan pakai karakter '|'; " ;; esac
       if [ -n "$COIN_POOL_DEFAULT" ] && ! [[ "$COIN_POOL_DEFAULT" =~ ^[A-Za-z0-9.-]+:[0-9]{2,5}$ ]]; then e+="COIN_POOL_DEFAULT harus host:port; "; fi
+      for p in $COIN_POOL_ALT; do
+        [[ "$p" =~ ^[A-Za-z0-9.-]+:[0-9]{2,5}$ ]] || e+="COIN_POOL_ALT berisi '$p' (harus host:port dipisah spasi); "
+      done
+      [ -z "$COIN_POOL_ALT" ] || [ -n "$COIN_POOL_DEFAULT" ] || e+="COIN_POOL_ALT butuh COIN_POOL_DEFAULT; "
       echo "$e"
     )"
     err+="$out"

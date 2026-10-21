@@ -13,7 +13,7 @@ update_menu() {
     ui_kv "Versi" "$APP_VERSION" "$C_G"
     ui_mid
     ui_row 1 "Update" "Cek & tarik pembaruan"
-    ui_row 2 "Miner"  "Pasang / cek miner"
+    ui_row 2 "Miner"  "Pasang / hapus miner"
     ui_row 0 "Kembali" "Ke menu utama"
     ui_bottom
     echo

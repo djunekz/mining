@@ -20,6 +20,26 @@ unset MINING_HOME
 mkdir -p "$TMP/bin"
 printf '#!/bin/sh\necho "FAKE_MINER $*"\nsleep 1\n' > "$TMP/bin/xmrig"
 printf '#!/bin/sh\necho "{ \\"temperature\\": 30.0 }"\n'  > "$TMP/bin/termux-battery-status"
+# jaringan palsu: "timeout" mensimulasikan tes TCP pool, "curl" mensimulasikan DNS-over-HTTPS
+REAL_TIMEOUT="$(command -v timeout)"
+cat > "$TMP/bin/timeout" <<EOF
+#!/bin/sh
+# tes TCP: dua argumen terakhir = host port. Host di FAKE_DOWN dianggap mati; IP selalu hidup.
+case "\$*" in
+  *dev/tcp*)
+    host=\$(echo "\$*" | awk '{print \$(NF-1)}')
+    case " \${FAKE_DOWN:-} " in *" \$host "*) exit 1 ;; esac
+    exit 0 ;;
+esac
+exec "$REAL_TIMEOUT" "\$@"
+EOF
+cat > "$TMP/bin/curl" <<'EOF'
+#!/bin/sh
+case "$*" in
+  *dns-query*|*resolve*) echo '{"Answer":[{"name":"x","type":1,"data": "203.0.113.7"}]}'; exit 0 ;;
+esac
+exit 1
+EOF
 chmod +x "$TMP/bin/"*
 export PATH="$TMP/bin:$PATH"
 
@@ -70,15 +90,30 @@ echo "== validasi input mining"
 out="$(printf '%s\n' 1 1 tester secret1 "" "$IDX" "bukan-pool" 0 0 | run)"
 check "pool tidak valid ditolak"     "Format pool harus host:port" "$out"
 
-echo "== pasang xmrig (pkg/git/cmake/make palsu)"
+echo "== pool otomatis"
+out="$(FAKE_DOWN="pool.supportxmr.com" bash -c 'printf "%s\n" 1 1 tester secret1 "" "$0" "" "" "" "" "" 0 0 | timeout 60 bash "$2/repo/mining.sh" 2>&1' "$IDX" "$WALLET" "$TMP" | strip)"
+check "pool mati dilaporkan"          "pool.supportxmr.com:3333 tidak terhubung" "$out"
+check "pool cadangan dipakai"         "FAKE_MINER -o xmr-eu1.nanopool.org:10300" "$out"
+check "alamat IP cadangan (DoH)"      "-o 203.0.113.7:3333" "$out"
+out="$(FAKE_DOWN="pool.supportxmr.com xmr-eu1.nanopool.org pool.hashvault.pro gulf.moneroocean.stream" bash -c 'printf "%s\n" 1 1 tester secret1 "" "$0" "" "" "" "" "" 0 0 | timeout 60 bash "$2/repo/mining.sh" 2>&1' "$IDX" "$WALLET" "$TMP" | strip)"
+check "semua host mati: pindah ke IP" "FAKE_MINER -o 203.0.113.7:3333" "$out"
+
+echo "== pasang xmrig & cpuminer (pkg/git/cmake/make palsu)"
 GIT_REAL="$(command -v git)"
-IB="$TMP/ibin"; mkdir -p "$IB" "$TMP/prefix/bin"
+IB="$TMP/ibin"; mkdir -p "$IB" "$TMP/prefix/bin" "$TMP/tpl"
 printf '#!/bin/sh\necho "FAKE_PKG $*"\n' > "$IB/pkg"
+printf '#!/bin/sh\nexit 0\n' > "$TMP/tpl/autogen.sh"
+printf '#!/bin/sh\necho "CFLAGS=$CFLAGS $*" > "$TMP_CMAKE_LOG"\n' > "$TMP/tpl/configure"
+chmod +x "$TMP/tpl/"*
 cat > "$IB/git" <<EOF
 #!/bin/sh
 case "\$1" in
-  ls-remote) printf 'a\trefs/tags/v6.9.0\nb\trefs/tags/v6.21.0\nc\trefs/tags/v6.22.2\nd\trefs/tags/v6.22.2-rc1\n' ;;
-  clone) for last; do :; done; mkdir -p "\$last"; echo "\$*" > "\$TMP_CLONE_LOG" ;;
+  ls-remote)
+    case "\$*" in
+      *cpuminer*) printf 'a\trefs/tags/v3.9.9\nb\trefs/tags/v26.1\nc\trefs/tags/v27.4\nd\trefs/tags/v.3.21.4\n' ;;
+      *) printf 'a\trefs/tags/v6.9.0\nb\trefs/tags/v6.21.0\nc\trefs/tags/v6.22.2\nd\trefs/tags/v6.22.2-rc1\n' ;;
+    esac ;;
+  clone) for last; do :; done; mkdir -p "\$last"; echo "\$*" > "\$TMP_CLONE_LOG"; cp "$TMP/tpl/"* "\$last/" ;;
   *) exec "$GIT_REAL" "\$@" ;;
 esac
 EOF
@@ -87,24 +122,66 @@ cat > "$IB/make" <<'EOF'
 #!/bin/sh
 [ -n "$FAKE_MAKE_FAIL" ] && { echo "make: *** error palsu"; exit 2; }
 printf '#!/bin/sh\necho "XMRig 6.22.2"\n' > xmrig; chmod +x xmrig
+printf '#!/bin/sh\necho "cpuminer-opt 27.4"\n' > cpuminer; chmod +x cpuminer
+EOF
+printf '#!/bin/sh\n[ "$1" = "-m" ] && echo aarch64 || exec /usr/bin/uname "$@"\n' > "$IB/uname"
+# curl palsu: tulis isi ccminer palsu ke berkas -o
+cat > "$IB/curl" <<'EOF'
+#!/bin/sh
+while [ $# -gt 0 ]; do [ "$1" = "-o" ] && { shift; out="$1"; }; shift; done
+[ -n "$FAKE_CURL_FAIL" ] && exit 22
+printf '#!/bin/sh\necho "ccminer 3.8.3"\n' > "$out"
 EOF
 chmod +x "$IB/"*
+FAKE_CC_SHA="$(printf '#!/bin/sh\necho "ccminer 3.8.3"\n' | sha256sum | cut -d' ' -f1)"
 runi() {
   TMP_CLONE_LOG="$TMP/clone.log" TMP_CMAKE_LOG="$TMP/cmake.log" PREFIX="$TMP/prefix" \
-    PATH="$IB:/usr/bin:/bin" timeout 60 bash "$TMP/repo/mining.sh" 2>&1 | strip
+    PATH="$IB:$TMP/prefix/bin:/usr/bin:/bin" timeout 60 bash "$TMP/repo/mining.sh" 2>&1 | strip
 }
 out="$(printf '%s\n' 4 2 2 y "" 0 0 0 | runi)"
-check "memilih rilis stabil terbaru (6.22.2, bukan 6.9.0/rc)" "Versi: v6.22.2" "$out"
+check "xmrig: rilis stabil terbaru (bukan 6.9.0/rc)" "Versi: v6.22.2" "$out"
 check "xmrig dipasang"               "xmrig terpasang: XMRig 6.22.2" "$out"
-grep -q -- '--branch v6.22.2' "$TMP/clone.log" && ok "clone memakai tag rilis" || bad "clone memakai tag rilis"
+grep -q -- '--branch v6.22.2' "$TMP/clone.log" && ok "xmrig: clone memakai tag rilis" || bad "xmrig: clone memakai tag rilis"
 grep -q -- '-DWITH_HWLOC=OFF' "$TMP/cmake.log" && ok "cmake: hwloc dimatikan" || bad "cmake: hwloc dimatikan"
-[ -x "$TMP/prefix/bin/xmrig" ] && ok "binary ada di PREFIX/bin" || bad "binary ada di PREFIX/bin"
+[ -x "$TMP/prefix/bin/xmrig" ] && ok "xmrig ada di PREFIX/bin" || bad "xmrig ada di PREFIX/bin"
 rm -f "$TMP/prefix/bin/xmrig"
 out="$(printf '%s\n' 4 2 2 y "" 0 0 0 | FAKE_MAKE_FAIL=1 runi)"
 check "kompilasi gagal dilaporkan"   "Kompilasi gagal"       "$out"
 [ ! -e "$TMP/prefix/bin/xmrig" ] && ok "tidak ada binary saat gagal" || bad "tidak ada binary saat gagal"
-out="$(printf '%s\n' 4 2 3 "" 0 0 0 | runi)"
-check "cpuminer: cara manual tampil" "BELUM DIUJI"           "$out"
+out="$(printf '%s\n' 4 2 3 y "" 0 0 0 | runi)"
+check "cpuminer: rilis terbaru"      "Versi: v27.4"          "$out"
+check "cpuminer dipasang"            "cpuminer terpasang: cpuminer-opt 27.4" "$out"
+grep -q -- '--branch v27.4' "$TMP/clone.log" && ok "cpuminer: clone memakai tag rilis" || bad "cpuminer: clone memakai tag rilis"
+grep -q 'CFLAGS=' "$TMP/cmake.log" && ok "cpuminer: configure dijalankan" || bad "cpuminer: configure dijalankan"
+[ -x "$TMP/prefix/bin/cpuminer" ] && ok "cpuminer ada di PREFIX/bin" || bad "cpuminer ada di PREFIX/bin"
+
+echo "== pasang ccminer (unduh + SHA-256)"
+out="$(printf '%s\n' 4 2 4 y "" 0 0 0 | CCMINER_SHA256="$FAKE_CC_SHA" runi)"
+check "ccminer: SHA-256 cocok"       "SHA-256 cocok"         "$out"
+check "ccminer dipasang"             "ccminer terpasang: ccminer 3.8.3" "$out"
+[ -x "$TMP/prefix/bin/ccminer" ] && ok "ccminer ada di PREFIX/bin" || bad "ccminer ada di PREFIX/bin"
+rm -f "$TMP/prefix/bin/ccminer"
+out="$(printf '%s\n' 4 2 4 y "" 0 0 0 | CCMINER_SHA256="deadbeef" runi)"
+check "ccminer: SHA-256 salah ditolak" "SHA-256 tidak cocok" "$out"
+[ ! -e "$TMP/prefix/bin/ccminer" ] && ok "ccminer tidak terpasang bila hash salah" || bad "ccminer tidak terpasang bila hash salah"
+out="$(printf '%s\n' 4 2 4 y "" 0 0 0 | FAKE_CURL_FAIL=1 CCMINER_SHA256="$FAKE_CC_SHA" runi)"
+check "ccminer: unduhan gagal dilaporkan" "Gagal mengunduh" "$out"
+
+echo "== uninstall miner"
+for m in xmrig ccminer; do printf '#!/bin/sh\necho x\n' > "$TMP/prefix/bin/$m"; chmod +x "$TMP/prefix/bin/$m"; done
+out="$(printf '%s\n' 4 2 6 1 y "" 0 0 0 0 | runi)"
+check "uninstall: daftar miner"      "UNINSTALL MINER"       "$out"
+check "uninstall: xmrig dihapus"     "xmrig dihapus"         "$out"
+[ ! -e "$TMP/prefix/bin/xmrig" ] && ok "berkas xmrig hilang" || bad "berkas xmrig hilang"
+[ -x "$TMP/prefix/bin/cpuminer" ] && ok "miner lain tidak ikut terhapus" || bad "miner lain tidak ikut terhapus"
+mkdir -p "$HOME/.mining/build"; echo x > "$HOME/.mining/build/sisa"
+out="$(printf '%s\n' 4 2 6 a y "" 0 0 0 | runi)"
+check "uninstall semua"              "dihapus"               "$out"
+[ ! -e "$TMP/prefix/bin/cpuminer" ] && [ ! -e "$TMP/prefix/bin/ccminer" ] && ok "semua miner terhapus" || bad "semua miner terhapus"
+[ ! -e "$HOME/.mining/build" ] && ok "sisa kompilasi dibersihkan" || bad "sisa kompilasi dibersihkan"
+[ -f "$HOME/.mining/users.db" ] && ok "akun tetap ada setelah uninstall" || bad "akun tetap ada setelah uninstall"
+out="$(printf '%s\n' 4 2 6 "" 0 0 0 | runi)"
+check "uninstall: tidak ada miner"   "Tidak ada miner yang terpasang" "$out"
 
 echo "== cek update (git sungguhan, remote lokal)"
 UP="$TMP/up"; mkdir -p "$UP"

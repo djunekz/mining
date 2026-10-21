@@ -8,10 +8,13 @@
 | `xmrig belum terpasang` | Miner belum di-install | Menu **Update > Miner > xmrig** (dikompilasi dari sumber, 10-30 menit) |
 | `E: Unable to locate package xmrig` | xmrig memang tidak ada di repo paket Termux | Jangan pakai `pkg install xmrig`; pakai menu **Update > Miner > xmrig** |
 | Kompilasi xmrig gagal / `No space left on device` | Ruang penyimpanan kurang (butuh sekitar 1 GB) | Kosongkan ruang, `pkg clean`, lalu ulangi |
-| `E: Unable to locate package cpuminer` | cpuminer tidak ada di repo paket Termux | Lihat cara manual di **Update > Miner > cpuminer** |
+| `E: Unable to locate package cpuminer` | cpuminer tidak ada di repo paket Termux | Pakai menu **Update > Miner > cpuminer** (dikompilasi dari sumber) |
 | Update bilang "Sudah versi terbaru" padahal `VERSION` lebih lama dari rilis | Versi lama hanya membandingkan commit | Perbarui ke versi terbaru dari repo (clone ulang atau `git pull`); versi baru membandingkan juga `VERSION` dengan rilis terbaru |
 | `termux-api tidak ada: pengaman suhu NONAKTIF` | Paket / aplikasi Termux:API belum ada | Menu **Update > Miner > Dasar**, lalu pasang aplikasi **Termux:API** dari F-Droid |
 | Kotak menu terpotong atau miring | Layar terlalu sempit atau font tidak monospace | Kecilkan font Termux (cubit layar) atau ubah `UI_W` di `lib/ui.sh` |
+| `DNS error: "no address"` di xmrig | DNS HP gagal meresolve nama pool | Pilih pool **otomatis** (Enter): MINING memakai alamat IP cadangan. Atau matikan VPN / Private DNS |
+| `SHA-256 tidak cocok` saat pasang ccminer | Berkas unduhan berubah atau rusak | Ulangi; bila tetap, buka issue (berkas ditolak demi keamanan) |
+| Ingin menghapus miner | - | **Update > Miner > Uninstall** |
 | `Format pool harus host:port` | Alamat pool salah | Isi seperti `pool.example.com:3333` tanpa `http://` |
 | Update gagal | Folder bukan hasil `git clone` atau ada perubahan lokal | `git clone https://github.com/djunekz/mining` ulang, atau `git stash` lalu update |
 | Lupa password | Akun hanya lokal, tidak ada reset | Hapus folder `~/.mining` lalu daftar ulang |

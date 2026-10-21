@@ -30,6 +30,12 @@ Lalu buka **4. Update > 2. Miner**:
 1. **Dasar** untuk `termux-api`, `curl`, dan `git`.
 2. **xmrig**: dikompilasi dari sumber resminya (xmrig tidak ada di repo paket Termux,
    jadi `pkg install xmrig` selalu gagal). Butuh sekitar 1 GB ruang kosong dan 10-30 menit.
+3. **cpuminer** (YTN, MBC): rilis terbaru cpuminer-opt (JayDDee) dikompilasi otomatis.
+   Butuh sekitar 500 MB dan 5-20 menit. Belum diuji di semua perangkat.
+4. **ccminer** (Verus/VRSC): binary ARM64 siap pakai diunduh, lalu diperiksa SHA-256-nya
+   (HP ARM 64-bit saja; binary pihak ketiga, risiko Anda).
+5. **Status** untuk melihat miner yang terpasang, dan **Uninstall** untuk menghapus miner
+   (akun, wallet, dan data MINING tidak ikut terhapus).
 
 ## Menu
 
@@ -88,3 +94,9 @@ Daftar koin saat ini: [docs/COINS.md](docs/COINS.md).
   Pengaman suhu otomatis butuh `termux-api` (+ aplikasi Termux:API dari F-Droid).
 - Koin bertanda `!` (BTC, LTC, DOGE, dst.) butuh ASIC/GPU, tidak praktis di HP.
 - Pool default hanya diisi untuk XMR dan VRSC; alamat pool bisa berubah.
+- **Pool otomatis.** Saat memilih pool, tekan Enter: MINING mengetes semua pool kandidat
+  (default + cadangan di file koin), memakai yang bisa terhubung, dan menambahkan alamat
+  IP cadangan lewat DNS-over-HTTPS. Ini mengatasi galat `DNS error: "no address"` dari
+  xmrig; bila satu pool putus, xmrig pindah sendiri ke cadangan. Koin tanpa pool default
+  tetap meminta Anda mengisi `host:port`. Kontributor bisa menambah cadangan lewat
+  `COIN_POOL_ALT` (dipisah spasi) di file koin.

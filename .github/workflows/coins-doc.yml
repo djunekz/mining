@@ -22,7 +22,7 @@ jobs:
     if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           ref: main
           # Jika main dilindungi ruleset, isi secret RELEASE_TOKEN (lihat docs/AUTOMATION.md).

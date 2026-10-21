@@ -9,7 +9,7 @@ export ROOT
 
 # shellcheck disable=SC1091
 source "$ROOT/config.sh"
-for m in ui auth coins install miner wallet referral update about; do
+for m in ui auth coins pool install miner wallet referral update about; do
   # shellcheck disable=SC1090
   source "$ROOT/lib/$m.sh"
 done

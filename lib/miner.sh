@@ -13,7 +13,12 @@ miner_build_cmd() {
   fi
   case "$COIN_MINER" in
     xmrig)
-      CMD=(xmrig -o "$POOL" -u "$WALLET" -p "$WORKER" -a "$COIN_ALGO" -t "$THREADS" -k --donate-level "$XMRIG_DONATE") ;;
+      # semua pool di POOLS dipakai berurutan: bila yang pertama putus, xmrig pindah otomatis
+      local pp; CMD=(xmrig)
+      for pp in "${POOLS[@]:-$POOL}"; do
+        CMD+=(-o "$pp" -u "$WALLET" -p "$WORKER" -a "$COIN_ALGO" -k)
+      done
+      CMD+=(-r 3 -R 3 -t "$THREADS" --donate-level "$XMRIG_DONATE") ;;
     ccminer)
       CMD=(ccminer -a "$COIN_ALGO" -o "stratum+tcp://$POOL" -u "$WALLET.$WORKER" -p x -t "$THREADS") ;;
     cpuminer)
@@ -60,8 +65,14 @@ miner_start() {
     ui_err "Belum ada miner yang didukung untuk koin ini."; ui_pause; return
   fi
   if ! command -v "$COIN_MINER" >/dev/null 2>&1; then
-    ui_err "$COIN_MINER belum terpasang. Pasang lewat menu Update > Miner."
-    ui_pause; return
+    ui_warn "$COIN_MINER belum terpasang."
+    if declare -F "install_$COIN_MINER" >/dev/null && ui_confirm "Pasang $COIN_MINER sekarang?"; then
+      "install_$COIN_MINER"
+    fi
+    if ! command -v "$COIN_MINER" >/dev/null 2>&1; then
+      ui_err "$COIN_MINER belum terpasang. Pasang lewat menu Update > Miner."
+      ui_pause; return
+    fi
   fi
 
   # --- wallet ---
@@ -77,11 +88,21 @@ miner_start() {
 
   # --- pool ---
   local p
-  ui_ask p "Pool host:port" "$COIN_POOL_DEFAULT"
-  POOL="${p#stratum+tcp://}"
-  if ! [[ "$POOL" =~ ^[A-Za-z0-9.-]+:[0-9]{2,5}$ ]]; then
-    ui_err "Format pool harus host:port."; ui_pause; return
+  if pool_has_candidates; then
+    ui_ask p "Pool (Enter = otomatis, atau host:port)" "auto"
+  else
+    ui_ask p "Pool host:port"
   fi
+  p="${p#stratum+tcp://}"
+  if { [ -z "$p" ] || [ "$p" = "auto" ]; } && pool_has_candidates; then
+    if ! pool_auto; then pool_diagnose; ui_pause; return; fi
+  else
+    if ! [[ "$p" =~ ^[A-Za-z0-9.-]+:[0-9]{2,5}$ ]]; then
+      ui_err "Format pool harus host:port."; ui_pause; return
+    fi
+    pool_manual "$p" || return
+  fi
+  POOL="${POOLS[0]}"
 
   # --- worker / thread / suhu ---
   ui_ask WORKER "Nama worker" "hp"
@@ -110,6 +131,7 @@ miner_start() {
   ui_kv "Koin"    "$COIN_NAME ($COIN_SYMBOL)" "$C_B"
   ui_kv "Algo"    "$COIN_ALGO"
   ui_kv "Pool"    "$POOL"
+  [ "${#POOLS[@]}" -le 1 ] || ui_kv "Cadangan" "$(( ${#POOLS[@]} - 1 )) pool lain" "$C_D"
   ui_kv "Wallet"  "$(ui_short "$WALLET")" "$C_G"
   ui_kv "Worker"  "$WORKER"
   ui_kv "Thread"  "$THREADS"

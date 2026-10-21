@@ -9,7 +9,7 @@ coins_scan() {
     [ -f "$f" ] || continue
     (
       COIN_SYMBOL=""; COIN_NAME=""; COIN_ALGO=""; COIN_MINER="none"
-      COIN_POOL_DEFAULT=""; COIN_NOTE=""; COIN_PRACTICAL="yes"
+      COIN_POOL_DEFAULT=""; COIN_POOL_ALT=""; COIN_NOTE=""; COIN_PRACTICAL="yes"
       # shellcheck disable=SC1090
       source "$f" >/dev/null 2>&1 || exit 0
       [ -n "$COIN_SYMBOL" ] || exit 0
@@ -22,7 +22,7 @@ coins_scan() {
 # Muat satu file koin ke shell saat ini
 coin_load() {
   COIN_SYMBOL=""; COIN_NAME=""; COIN_ALGO=""; COIN_MINER="none"
-  COIN_POOL_DEFAULT=""; COIN_NOTE=""; COIN_PRACTICAL="yes"
+  COIN_POOL_DEFAULT=""; COIN_POOL_ALT=""; COIN_NOTE=""; COIN_PRACTICAL="yes"
   unset -f coin_cmd 2>/dev/null
   # shellcheck disable=SC1090
   source "$1"
