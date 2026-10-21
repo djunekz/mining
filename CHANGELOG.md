@@ -13,11 +13,24 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 <!-- changelog:unreleased:start -->
 
+_Belum ada perubahan sejak rilis terakhir._
+
+<!-- changelog:unreleased:end -->
+
+## [1.1.0] - 2026-10-21
+
+### Added
+
+- pool otomatis, pasang cpuminer/ccminer, uninstall miner ([`f13b3dd`](https://github.com/djunekz/mining/commit/f13b3dd))
+- pool otomatis, pasang cpuminer/ccminer, uninstall miner ([`c28241b`](https://github.com/djunekz/mining/commit/c28241b))
+
 ### Documentation
 
 - Revise automation documentation for protected main branch ([`312b298`](https://github.com/djunekz/mining/commit/312b298))
 
-<!-- changelog:unreleased:end -->
+### Maintenance
+
+- **deps:** bump actions/checkout from 4 to 7 in the actions group ([#2](https://github.com/djunekz/mining/pull/2)) ([`b5a4692`](https://github.com/djunekz/mining/commit/b5a4692))
 
 ## [1.0.4] - 2026-10-13
 
@@ -68,7 +81,8 @@ dan versi mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Template issue (bug, fitur, koin baru, pool bermasalah) dan template PR (umum dan koin baru).
 - Dokumen proyek: `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, `docs/AUTOMATION.md`.
 
-[Unreleased]: https://github.com/djunekz/mining/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/djunekz/mining/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/djunekz/mining/releases/tag/v1.1.0
 [1.0.4]: https://github.com/djunekz/mining/releases/tag/v1.0.4
 [1.0.3]: https://github.com/djunekz/mining/releases/tag/v1.0.3
 [1.0.2]: https://github.com/djunekz/mining/releases/tag/v1.0.2
