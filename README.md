@@ -92,7 +92,12 @@ Daftar koin saat ini: [docs/COINS.md](docs/COINS.md).
   disimpan sementara dengan `git stash`, tidak dibuang.
 - **Mining di HP umumnya tidak menguntungkan** dan memanaskan baterai/CPU.
   Pengaman suhu otomatis butuh `termux-api` (+ aplikasi Termux:API dari F-Droid).
-- Koin bertanda `!` (BTC, LTC, DOGE, dst.) butuh ASIC/GPU, tidak praktis di HP.
+- Koin bertanda `!` (BTC, BCH, LTC, DOGE, DGB, DASH) ditambang ASIC/GPU. Tetap bisa dijalankan
+  dari HP dengan pool otomatis, tetapi hasilnya hampir nol. BTC memakai pool solo
+  (`solo.ckpool.org`): hadiah hanya jika HP Anda kebetulan menemukan blok. Koin lain memakai
+  `zpool` (alamat wallet langsung jadi username, `c=SIMBOL` sebagai password).
+- **Mulai cepat.** Setelah wallet tersimpan, jawab Enter pada "Mulai otomatis?" dan MINING
+  memilih pool, worker `hp`, jumlah thread, dan batas suhu sendiri.
 - Pool default hanya diisi untuk XMR dan VRSC; alamat pool bisa berubah.
 - **Pool otomatis.** Saat memilih pool, tekan Enter: MINING mengetes semua pool kandidat
   (default + cadangan di file koin), memakai yang bisa terhubung, dan menambahkan alamat

@@ -8,18 +8,18 @@ Total: **30 koin**.
 | Kode | Nama | Algoritma | Miner | Pool default | Praktis di HP | Catatan |
 |---|---|---|---|---|---|---|
 | ARQ | ArQmA | `rx/arq` | xmrig | - | ya | CPU |
-| BCH | Bitcoin Cash | `sha256d` | cpuminer | - | tidak | Butuh ASIC |
-| BTC | Bitcoin | `sha256d` | cpuminer | - | tidak | Butuh ASIC |
+| BCH | Bitcoin Cash | `sha256d` | cpuminer | sha256.mine.zpool.ca:3333 | tidak | Hasil hampir nol |
+| BTC | Bitcoin | `sha256d` | cpuminer | solo.ckpool.org:3333 (+2 cadangan) | tidak | Solo: hadiah hanya bila temu blok |
 | CCX | Conceal | `cn/ccx` | xmrig | - | ya | CPU |
-| DASH | Dash | `x11` | cpuminer | - | tidak | Butuh ASIC |
+| DASH | Dash | `x11` | cpuminer | x11.mine.zpool.ca:3534 | tidak | Hasil hampir nol |
 | DERO | Dero | `astrobwt` | xmrig | - | ya | CPU |
-| DGB | DigiByte | `sha256d` | cpuminer | - | tidak | Butuh ASIC |
-| DOGE | Dogecoin | `scrypt` | cpuminer | - | tidak | Butuh ASIC |
+| DGB | DigiByte | `sha256d` | cpuminer | sha256.mine.zpool.ca:3333 | tidak | Hasil hampir nol |
+| DOGE | Dogecoin | `scrypt` | cpuminer | scrypt.mine.zpool.ca:3433 | tidak | Hasil hampir nol |
 | ETC | Eth. Classic | `etchash` | none | - | tidak | Butuh GPU, belum ada miner |
 | GRAFT | Graft | `rx/graft` | xmrig | - | ya | CPU |
 | KCN | Kylacoin | `flex` | xmrig | - | ya | CPU |
 | KVA | Kevacoin | `rx/keva` | xmrig | - | ya | CPU |
-| LTC | Litecoin | `scrypt` | cpuminer | - | tidak | Butuh ASIC |
+| LTC | Litecoin | `scrypt` | cpuminer | scrypt.mine.zpool.ca:3433 | tidak | Hasil hampir nol |
 | MBC | MicroBitcoin | `yespower` | cpuminer | - | ya | CPU |
 | RTM | Raptoreum | `ghostrider` | xmrig | - | ya | CPU berat |
 | RVN | Ravencoin | `kawpow` | xmrig | - | tidak | Butuh GPU |

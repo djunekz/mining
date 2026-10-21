@@ -20,9 +20,9 @@ miner_build_cmd() {
       done
       CMD+=(-r 3 -R 3 -t "$THREADS" --donate-level "$XMRIG_DONATE") ;;
     ccminer)
-      CMD=(ccminer -a "$COIN_ALGO" -o "stratum+tcp://$POOL" -u "$WALLET.$WORKER" -p x -t "$THREADS") ;;
+      CMD=(ccminer -a "$COIN_ALGO" -o "stratum+tcp://$POOL" -u "$WALLET.$WORKER" -p "${COIN_POOL_PASS:-x}" -t "$THREADS") ;;
     cpuminer)
-      CMD=(cpuminer -a "$COIN_ALGO" -o "stratum+tcp://$POOL" -u "$WALLET.$WORKER" -p x -t "$THREADS") ;;
+      CMD=(cpuminer -a "$COIN_ALGO" -o "stratum+tcp://$POOL" -u "$WALLET.$WORKER" -p "${COIN_POOL_PASS:-x}" -t "$THREADS") ;;
     *) return 1 ;;
   esac
 }
@@ -58,8 +58,7 @@ miner_start() {
   echo
 
   if [ "$COIN_PRACTICAL" = "no" ]; then
-    ui_warn "Koin ini tidak praktis ditambang di HP (butuh ASIC/GPU)."
-    ui_confirm "Tetap lanjut?" || return
+    ui_warn "Koin ini ditambang ASIC/GPU: di HP hasilnya hampir nol."
   fi
   if [ "$COIN_MINER" = "none" ]; then
     ui_err "Belum ada miner yang didukung untuk koin ini."; ui_pause; return
@@ -86,9 +85,15 @@ miner_start() {
     ui_info "Wallet: $(ui_short "$WALLET")  (ubah di menu Wallet)"
   fi
 
+  # --- mode otomatis: semua pertanyaan di bawah memakai nilai bawaan ---
+  local quick=0
+  if pool_has_candidates && ui_confirm_y "Mulai otomatis (pool, worker, thread otomatis)?"; then quick=1; fi
+
   # --- pool ---
   local p
-  if pool_has_candidates; then
+  if [ "$quick" = 1 ]; then
+    p="auto"
+  elif pool_has_candidates; then
     ui_ask p "Pool (Enter = otomatis, atau host:port)" "auto"
   else
     ui_ask p "Pool host:port"
@@ -105,16 +110,19 @@ miner_start() {
   POOL="${POOLS[0]}"
 
   # --- worker / thread / suhu ---
-  ui_ask WORKER "Nama worker" "hp"
+  WORKER="hp"
+  [ "$quick" = 1 ] || ui_ask WORKER "Nama worker" "hp"
   [[ "$WORKER" =~ ^[A-Za-z0-9_-]{1,20}$ ]] || { ui_err "Nama worker tidak valid."; ui_pause; return; }
 
   local cores def maxtemp guard=1
   cores="$(nproc 2>/dev/null || echo 2)"
   def=$(( cores > 1 ? cores / 2 : 1 ))
-  ui_ask THREADS "Jumlah thread (CPU $cores core)" "$def"
+  THREADS="$def"
+  [ "$quick" = 1 ] || ui_ask THREADS "Jumlah thread (CPU $cores core)" "$def"
   [[ "$THREADS" =~ ^[0-9]{1,3}$ ]] && [ "$THREADS" -ge 1 ] || { ui_err "Thread tidak valid."; ui_pause; return; }
 
-  ui_ask maxtemp "Batas suhu baterai (C)" "$MAX_TEMP_DEFAULT"
+  maxtemp="$MAX_TEMP_DEFAULT"
+  [ "$quick" = 1 ] || ui_ask maxtemp "Batas suhu baterai (C)" "$MAX_TEMP_DEFAULT"
   [[ "$maxtemp" =~ ^[0-9]{2,3}$ ]] || { ui_err "Suhu tidak valid."; ui_pause; return; }
 
   if ! command -v termux-battery-status >/dev/null 2>&1; then

@@ -25,6 +25,7 @@ di URL PR). Koin otomatis muncul di menu **List Koin** dan **Mining**, dan
 | `COIN_NAME` | Nama koin |
 | `COIN_ALGO` | Nama algoritma menurut miner (xmrig: `rx/0`, `cn/r`, ...) |
 | `COIN_MINER` | `xmrig`, `ccminer`, `cpuminer`, atau `none` |
+| `COIN_POOL_PASS` | opsional: password pool untuk cpuminer/ccminer, mis. `c=DOGE` (zpool). Bawaan `x` |
 | `COIN_POOL_DEFAULT` | `host:port` (boleh kosong, pengguna diminta mengisi) |
 | `COIN_NOTE` | Keterangan singkat |
 | `COIN_PRACTICAL` | `yes` layak di HP, `no` butuh ASIC/GPU |

@@ -87,7 +87,7 @@ check "registrasi dengan referral"   "Registrasi berhasil"   "$out"
 [ "$(grep -m1 '^budi:' "$HOME/.mining/users.db" | cut -d: -f5)" = "tester" ] && ok "referred_by tercatat" || bad "referred_by tercatat"
 
 echo "== validasi input mining"
-out="$(printf '%s\n' 1 1 tester secret1 "" "$IDX" "bukan-pool" 0 0 | run)"
+out="$(printf '%s\n' 1 1 tester secret1 "" "$IDX" n "bukan-pool" 0 0 | run)"
 check "pool tidak valid ditolak"     "Format pool harus host:port" "$out"
 
 echo "== pool otomatis"
@@ -97,6 +97,18 @@ check "pool cadangan dipakai"         "FAKE_MINER -o xmr-eu1.nanopool.org:10300"
 check "alamat IP cadangan (DoH)"      "-o 203.0.113.7:3333" "$out"
 out="$(FAKE_DOWN="pool.supportxmr.com xmr-eu1.nanopool.org pool.hashvault.pro gulf.moneroocean.stream" bash -c 'printf "%s\n" 1 1 tester secret1 "" "$0" "" "" "" "" "" 0 0 | timeout 60 bash "$2/repo/mining.sh" 2>&1' "$IDX" "$WALLET" "$TMP" | strip)"
 check "semua host mati: pindah ke IP" "FAKE_MINER -o 203.0.113.7:3333" "$out"
+
+echo "== koin tanda seru: pool otomatis + mulai cepat"
+printf '#!/bin/sh\necho "FAKE_CPU $*"\nsleep 1\n' > "$TMP/bin/cpuminer"; chmod +x "$TMP/bin/cpuminer"
+idx_of() { ROOT="$TMP/repo" bash -c 'source "$ROOT/config.sh"; for m in ui coins; do source "$ROOT/lib/$m.sh"; done; coins_scan | cut -d"|" -f1 | grep -nx "$0" | cut -d: -f1' "$1"; }
+BTCW="bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
+out="$(printf '%s\n' 1 1 tester secret1 "" "$(idx_of BTC)" "$BTCW" "" "" "" 0 0 | run)"
+check "BTC: peringatan non-blokir"    "hasilnya hampir nol"   "$out"
+check "BTC: pool ckpool otomatis"     "FAKE_CPU -a sha256d -o stratum+tcp://solo.ckpool.org:3333" "$out"
+check "BTC: password c=BTC"           "-p c=BTC"              "$out"
+out="$(printf '%s\n' 1 1 tester secret1 "" "$(idx_of DOGE)" "DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L" "" "" "" 0 0 | run)"
+check "DOGE: pool otomatis"           "FAKE_CPU -a scrypt -o stratum+tcp://scrypt.mine.zpool.ca:3433" "$out"
+check "DOGE: password c=DOGE"         "-p c=DOGE"             "$out"
 
 echo "== pasang xmrig & cpuminer (pkg/git/cmake/make palsu)"
 GIT_REAL="$(command -v git)"
@@ -232,6 +244,12 @@ git -C "$UP/app" checkout -q -- VERSION
 git -C "$UP/app" remote set-url origin "$UP/tidak-ada.git"
 out="$(printf '%s\n' 4 1 "" 0 0 | runapp)"
 check "remote tidak terjangkau"      "Gagal terhubung ke repo" "$out"
+
+echo "== generator docs/COINS.md"
+cp "$REPO/docs/COINS.md" "$TMP/COINS.before" 2>/dev/null || true
+if bash "$TMP/repo/tools/gen-coins-md.sh" >/dev/null 2>&1; then ok "gen-coins-md berhasil (koin tanpa COIN_POOL_ALT)"; else bad "gen-coins-md berhasil (koin tanpa COIN_POOL_ALT)"; fi
+[ "$(grep -c '^| [A-Z0-9]* |' "$TMP/repo/docs/COINS.md")" -eq "$NCOINS" ] && ok "docs/COINS.md memuat semua koin" || bad "docs/COINS.md memuat semua koin"
+cmp -s "$REPO/docs/COINS.md" "$TMP/repo/docs/COINS.md" && ok "docs/COINS.md di repo sudah terbaru" || bad "docs/COINS.md di repo sudah terbaru"
 
 echo "== menambah koin cukup dengan 1 file"
 cat > "$TMP/repo/coins/new.sh" <<'EOF'

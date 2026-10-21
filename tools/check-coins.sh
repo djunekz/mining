@@ -44,7 +44,7 @@ for f in "$ROOT"/coins/*.sh; do
 
   if [ -z "$err" ]; then
     out="$(
-      COIN_SYMBOL=""; COIN_NAME=""; COIN_ALGO=""; COIN_MINER=""; COIN_POOL_DEFAULT=""; COIN_POOL_ALT=""; COIN_NOTE=""; COIN_PRACTICAL=""
+      COIN_SYMBOL=""; COIN_NAME=""; COIN_ALGO=""; COIN_MINER=""; COIN_POOL_DEFAULT=""; COIN_POOL_ALT=""; COIN_POOL_PASS=""; COIN_NOTE=""; COIN_PRACTICAL=""
       # shellcheck disable=SC1090
       source "$f" 2>&1 || { echo "gagal di-source"; exit 0; }
       e=""

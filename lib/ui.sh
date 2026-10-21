@@ -145,6 +145,13 @@ ui_confirm() {
   [[ "$a" =~ ^[Yy]$ ]]
 }
 
+# ui_confirm_y "Pertanyaan?" -> seperti ui_confirm, tetapi Enter berarti ya (Y/n)
+ui_confirm_y() {
+  local a
+  IFS= read -r -p "  ${C_Y}$1${C_0} ${C_D}(Y/n)${C_0} ${C_C}❯${C_0} " a || exit 0
+  [[ ! "$a" =~ ^[Nn]$ ]]
+}
+
 # 49gYsExample...abc123  (untuk menampilkan alamat panjang)
 ui_short() {
   local a="$1"
