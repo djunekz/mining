@@ -110,6 +110,24 @@ Catatan:
 - Alternatif paling sederhana untuk proyek sendirian: hapus aturan "Require a pull request" dan
   "Require status checks" dari ruleset `main`. Konsekuensinya push langsung tidak diperiksa CI.
 
+### Error 403 "Permission to ... denied to <nama-anda>"
+
+Pesan ini berarti `RELEASE_TOKEN` sudah terbaca, tetapi tokennya tidak boleh menulis ke repo.
+Buka token di **Settings > Developer settings > Fine-grained tokens**, lalu pastikan:
+
+- **Repository access** memilih repo `mining` ini;
+- **Repository permissions > Contents** bernilai *Read and write* (bukan *Read-only*);
+- tokennya belum kedaluwarsa.
+
+Mengubah izin token tidak mengubah isi token, jadi secret tidak perlu dibuat ulang.
+Setelah itu jalankan **Actions > Release > Run workflow**.
+
+### Workflow Changelog
+
+Selama auto release aktif (bawaan), workflow Release sudah menulis `CHANGELOG.md` sendiri,
+jadi workflow Changelog dilewati pada push ke `main`. Ia hanya jalan otomatis bila Repository
+variable `AUTO_RELEASE` bernilai `false`, atau lewat tombol **Run workflow**.
+
 ## Keamanan workflow
 
 - Semua workflow memakai izin minimum (`permissions:`).

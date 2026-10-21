@@ -1,7 +1,10 @@
 name: Changelog
 
 # Memperbarui blok [Unreleased] di CHANGELOG.md dari pesan commit
-# (Conventional Commits) setiap ada push ke main.
+# (Conventional Commits).
+# Saat auto release aktif (bawaan), workflow Release sudah menulis CHANGELOG.md
+# sendiri, jadi job ini hanya jalan untuk push ke main bila Repository variable
+# AUTO_RELEASE = false. Lewat tombol "Run workflow" selalu jalan.
 on:
   push:
     branches: [main]
@@ -12,15 +15,16 @@ on:
 permissions:
   contents: write
 
-# Satu antrean bersama dengan release/coins-doc supaya push ke main tidak bertabrakan.
-concurrency:
-  group: repo-write
-  cancel-in-progress: false
-
 jobs:
   changelog:
     name: Perbarui CHANGELOG.md
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ !github.event.repository.fork && (github.event_name == 'workflow_dispatch' || vars.AUTO_RELEASE == 'false') }}
+    # Antrean bersama dengan release/coins-doc supaya push ke main tidak bertabrakan.
+    # Dipasang di tingkat job: bila job dilewati, antrean tidak ikut terpakai
+    # (antrean tingkat workflow membuat run Release terbatalkan).
+    concurrency:
+      group: repo-write
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

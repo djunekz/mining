@@ -29,13 +29,13 @@ Total: **30 koin**.
 | TLO | Talleo | `cn-pico/tlo` | xmrig | - | ya | CPU ringan |
 | TRTL | TurtleCoin | `argon2/chukwa` | xmrig | - | ya | CPU ringan |
 | TUBE | BitTube | `cn-heavy/tube` | xmrig | - | ya | CPU berat |
-| VRSC | Verus | `verus` | ccminer | na.luckpool.net:3956 | ya | Populer di HP (butuh ccminer ARM) |
+| VRSC | Verus | `verus` | ccminer | na.luckpool.net:3956 (+2 cadangan) | ya | Populer di HP (butuh ccminer ARM) |
 | WOW | Wownero | `rx/wow` | xmrig | - | ya | CPU |
 | XHV | Haven | `cn-heavy/xhv` | xmrig | - | ya | CPU berat |
-| XMR | Monero | `rx/0` | xmrig | pool.supportxmr.com:3333 | ya | CPU - paling layak di HP |
+| XMR | Monero | `rx/0` | xmrig | pool.supportxmr.com:3333 (+3 cadangan) | ya | CPU - paling layak di HP |
 | XTM | Tari (RandomX) | `rx/0` | xmrig | - | ya | CPU |
 | YDA | Yadacoin | `rx/yada` | xmrig | - | ya | CPU |
-| YTN | Yenten | `yespower` | cpuminer | - | ya | CPU |
+| YTN | Yenten | `yespowerr16` | cpuminer | cpu-pool.com:63368 | ya | CPU |
 | ZEPH | Zephyr | `rx/0` | xmrig | - | ya | CPU |
 
 Koin yang tidak praktis (butuh ASIC/GPU) tetap ada di daftar agar mudah

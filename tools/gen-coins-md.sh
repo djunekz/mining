@@ -7,7 +7,8 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-field() { grep -m1 "^$1=" "$2" | cut -d'"' -f2; }
+# Nilai field; kosong (bukan galat) bila field tidak ada di file koin
+field() { grep -m1 "^$1=" "$2" | cut -d'"' -f2 || true; }
 
 gen() {
   local f n=0 rows="" sym name algo miner pool prac note alt k
@@ -42,4 +43,4 @@ Ingin menambah koin? Lihat [CONTRIBUTING.md](../CONTRIBUTING.md).
 EOF
 }
 
-if [ "${1:-}" = "--stdout" ]; then gen; else gen > "$ROOT/docs/COINS.md"; echo "docs/COINS.md diperbarui."; fi
+if [ "${1:-}" = "--stdout" ]; then gen; else gen > "$ROOT/docs/COINS.md.tmp" && mv "$ROOT/docs/COINS.md.tmp" "$ROOT/docs/COINS.md"; echo "docs/COINS.md diperbarui."; fi
