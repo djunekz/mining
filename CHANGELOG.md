@@ -17,6 +17,12 @@ _Belum ada perubahan sejak rilis terakhir._
 
 <!-- changelog:unreleased:end -->
 
+## [1.2.0] - 2026-10-21
+
+### Added
+
+- pool otomatis dan mulai cepat untuk koin ASIC ([`7375ed1`](https://github.com/djunekz/mining/commit/7375ed1))
+
 ## [1.1.0] - 2026-10-21
 
 ### Added
@@ -81,7 +87,8 @@ _Belum ada perubahan sejak rilis terakhir._
 - Template issue (bug, fitur, koin baru, pool bermasalah) dan template PR (umum dan koin baru).
 - Dokumen proyek: `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, `docs/AUTOMATION.md`.
 
-[Unreleased]: https://github.com/djunekz/mining/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/djunekz/mining/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/djunekz/mining/releases/tag/v1.2.0
 [1.1.0]: https://github.com/djunekz/mining/releases/tag/v1.1.0
 [1.0.4]: https://github.com/djunekz/mining/releases/tag/v1.0.4
 [1.0.3]: https://github.com/djunekz/mining/releases/tag/v1.0.3
