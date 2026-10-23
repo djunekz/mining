@@ -1,8 +1,0 @@
-COIN_SYMBOL="DASH"
-COIN_NAME="Dash"
-COIN_ALGO="x11"
-COIN_MINER="cpuminer"
-COIN_POOL_DEFAULT="x11.mine.zpool.ca:3534"
-COIN_POOL_PASS="c=DASH"
-COIN_NOTE="Hasil hampir nol"
-COIN_PRACTICAL="no"

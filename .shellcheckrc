@@ -1,6 +1,0 @@
-# Aturan ShellCheck untuk seluruh repo
-# SC1090/SC1091: source dinamis ("$ROOT/lib/x.sh") tidak bisa diikuti
-# SC2034: variabel global dipakai lintas-file (config.sh, COIN_*)
-# SC2154: variabel global didefinisikan di file lain
-disable=SC1090,SC1091,SC2034,SC2154
-shell=bash

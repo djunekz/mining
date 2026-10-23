@@ -1,8 +1,0 @@
-COIN_SYMBOL="DGB"
-COIN_NAME="DigiByte"
-COIN_ALGO="sha256d"
-COIN_MINER="cpuminer"
-COIN_POOL_DEFAULT="sha256.mine.zpool.ca:3333"
-COIN_POOL_PASS="c=DGB"
-COIN_NOTE="Hasil hampir nol"
-COIN_PRACTICAL="no"

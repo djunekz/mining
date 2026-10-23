@@ -1,8 +1,0 @@
-COIN_SYMBOL="LTC"
-COIN_NAME="Litecoin"
-COIN_ALGO="scrypt"
-COIN_MINER="cpuminer"
-COIN_POOL_DEFAULT="scrypt.mine.zpool.ca:3433"
-COIN_POOL_PASS="c=LTC"
-COIN_NOTE="Hasil hampir nol"
-COIN_PRACTICAL="no"

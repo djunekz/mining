@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Laporan keamanan (privat)
-    url: https://github.com/djunekz/mining/security/advisories/new
-    about: Temukan celah keamanan? Laporkan secara privat di sini, jangan lewat issue publik.
-  - name: Bantuan penggunaan
-    url: https://github.com/djunekz/mining/blob/main/SUPPORT.md
-    about: Baca dulu panduan masalah umum (nano read-only, termux-api, miner belum terpasang, dll).
