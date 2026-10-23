@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Laporan kerentanan keamanan
+    url: https://github.com/djunekz/unmineable/security/advisories/new
+    about: Laporkan celah keamanan secara privat. Jangan buka issue publik.
+  - name: Pusat bantuan unMineable
+    url: https://unmineable.com/support
+    about: Pertanyaan soal akun, saldo, fee, atau pembayaran dikelola oleh unMineable, bukan proyek ini.
+  - name: Panduan dan FAQ tool ini
+    url: https://github.com/djunekz/unmineable#readme
+    about: Baca README terlebih dahulu, terutama bagian syarat mining dan masalah sinkron ke website.

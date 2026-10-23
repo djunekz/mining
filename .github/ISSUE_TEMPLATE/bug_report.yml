@@ -1,0 +1,111 @@
+name: Laporan bug
+description: Ada fitur yang tidak berfungsi sesuai harapan
+title: "[Bug]: "
+labels: ["bug", "perlu-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih sudah melapor. Makin lengkap datanya, makin cepat bug bisa diperbaiki.
+
+        **Penting:** hapus alamat dompet, alias, token bot, dan chat ID dari semua log atau tangkapan layar sebelum menempelkannya di sini.
+  - type: checkboxes
+    id: prasyarat
+    attributes:
+      label: Sebelum melapor
+      options:
+        - label: Saya sudah mencari issue lain yang membahas hal yang sama
+          required: true
+        - label: Saya memakai versi terbaru (cek dengan `unmineable check`)
+          required: true
+        - label: Saya sudah menghapus data pribadi dari log yang saya tempel
+          required: true
+  - type: input
+    id: versi
+    attributes:
+      label: Versi unMineable
+      description: Hasil dari `unmineable --version`
+      placeholder: unmineable 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: instalasi
+    attributes:
+      label: Cara pemasangan
+      options:
+        - Install dari lokal (git clone atau folder hasil ekstrak)
+        - Install dari release
+        - Lainnya
+    validations:
+      required: true
+  - type: input
+    id: perangkat
+    attributes:
+      label: Perangkat dan versi Android
+      placeholder: Redmi Note 11, Android 13
+    validations:
+      required: true
+  - type: input
+    id: termux
+    attributes:
+      label: Versi dan sumber Termux
+      description: Sumber pemasangan (F-Droid, GitHub, dll) dan versinya
+      placeholder: Termux 0.118.3 dari F-Droid
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode login
+      options:
+        - Alias akun website
+        - Alamat dompet
+        - Belum sampai tahap login
+    validations:
+      required: true
+  - type: input
+    id: xmrig
+    attributes:
+      label: Versi dan asal XMRig
+      description: Terlihat di `unmineable doctor`
+      placeholder: XMRig 6.22.0 dari repo Termux
+  - type: textarea
+    id: deskripsi
+    attributes:
+      label: Apa yang terjadi
+      description: Jelaskan bug dengan singkat dan jelas
+    validations:
+      required: true
+  - type: textarea
+    id: langkah
+    attributes:
+      label: Langkah untuk mereproduksi
+      placeholder: |
+        1. Jalankan `unmineable`
+        2. Pilih menu ...
+        3. Lihat hasilnya
+    validations:
+      required: true
+  - type: textarea
+    id: harapan
+    attributes:
+      label: Yang seharusnya terjadi
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Keluaran `unmineable doctor`
+      description: Tempel hasilnya (tanpa data pribadi)
+      render: shell
+  - type: textarea
+    id: log
+    attributes:
+      label: Log atau pesan error
+      description: Dari `unmineable logs -n 50` atau `unmineable logs -g -n 50`
+      render: shell
+  - type: textarea
+    id: tambahan
+    attributes:
+      label: Informasi tambahan
+      description: Tangkapan layar atau hal lain yang relevan

@@ -1,0 +1,82 @@
+name: Masalah koneksi pool atau data tidak muncul di website
+description: Mining berjalan tetapi tidak terhubung ke pool, login ditolak, atau hasil tidak tampil di website unMineable
+title: "[Koneksi]: "
+labels: ["koneksi", "perlu-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Sebelum membuka issue ini, jalankan `unmineable sync` dan baca kesimpulannya. Sebagian besar kasus disebabkan oleh port 3333 yang diblokir ISP, alamat yang tidak cocok dengan jaringan koin, atau membuka dashboard koin yang berbeda.
+
+        **Penting:** hapus alamat dompet, alias, dan token dari keluaran yang kamu tempel.
+  - type: checkboxes
+    id: prasyarat
+    attributes:
+      label: Sudah saya coba
+      options:
+        - label: Saya menjalankan `unmineable sync` dan menempelkan hasilnya di bawah
+          required: true
+        - label: Saya mencoba pool SSL 443 atau port 80 di Pengaturan > Pool
+          required: false
+        - label: Saya sudah menunggu beberapa menit sampai jam setelah mining jalan (hashrate HP kecil, data website tertunda)
+          required: true
+        - label: Saya sudah menghapus data pribadi dari keluaran yang saya tempel
+          required: true
+  - type: input
+    id: versi
+    attributes:
+      label: Versi unMineable
+      placeholder: unmineable 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode login
+      options:
+        - Alias akun website
+        - Alamat dompet
+    validations:
+      required: true
+  - type: input
+    id: koin
+    attributes:
+      label: Koin yang dipilih
+      description: Isi jika memakai mode alamat dompet
+      placeholder: DOGE
+  - type: dropdown
+    id: gejala
+    attributes:
+      label: Gejala utama
+      options:
+        - Login ditolak oleh pool
+        - Tidak bisa terhubung ke pool
+        - Terhubung tetapi tidak ada share diterima
+        - Share diterima tetapi tidak muncul di website
+        - Worker tampil offline di website
+        - Lainnya
+    validations:
+      required: true
+  - type: input
+    id: jaringan
+    attributes:
+      label: Jaringan yang dipakai
+      description: Operator seluler atau ISP, serta apakah memakai VPN
+      placeholder: Wi-Fi rumah, ISP X, tanpa VPN
+  - type: textarea
+    id: sync
+    attributes:
+      label: Keluaran `unmineable sync`
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log XMRig
+      description: Dari `unmineable logs -n 50`
+      render: shell
+  - type: textarea
+    id: tambahan
+    attributes:
+      label: Informasi tambahan

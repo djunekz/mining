@@ -7,8 +7,13 @@ Ketik `unmineable` dan semua fitur muncul sebagai menu pilihan.
 
 ```
 unmineable/
-├── .github/workflows/
-│   └── auto-release.yml    release otomatis saat tag dibuat
+├── .github/
+│   ├── ISSUE_TEMPLATE/     template laporan bug, koneksi, fitur, dokumentasi
+│   ├── workflows/
+│   │   └── auto-release.yml    release otomatis saat tag dibuat
+│   ├── CODEOWNERS
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── dependabot.yml
 ├── unmineable/
 │   ├── __init__.py
 │   ├── __main__.py
@@ -39,6 +44,11 @@ unmineable/
 │   └── cli.py              perintah baris
 ├── unmineable.sh           launcher utama
 ├── install.sh              installer (lokal atau release)
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── SUPPORT.md
 ├── LICENSE
 └── README.md
 ```
@@ -65,7 +75,7 @@ Tanpa argumen muncul pilihan interaktif. Bisa juga langsung:
 ```bash
 bash install.sh local
 bash install.sh release
-bash install.sh release v2.1.0
+bash install.sh release v0.1.0
 ```
 
 Pemasangan satu baris dari release (otomatis memilih release):
@@ -100,64 +110,23 @@ Kalau mining sedang berjalan, jalankan `unmineable restart` setelah update.
 Workflow `.github/workflows/auto-release.yml` berjalan setiap ada tag berawalan `v`:
 
 1. validasi sintaks Python dan shell
-2. peringatan bila tag tidak sama dengan `VERSION` di `constants.py`
-3. membuat `unmineable-vX.Y.Z.tar.gz`, `.zip`, dan `SHA256SUMS`
-4. membuat GitHub Release dengan catatan otomatis (tag berisi `-`, mis. `v2.2.0-rc1`, menjadi pre-release)
+2. memastikan tag sama dengan `VERSION` di `unmineable/constants.py` (gagal jika berbeda)
+3. mengambil catatan di bawah judul versi tersebut dari `CHANGELOG.md` (gagal jika tidak ada)
+4. membuat `unmineable-vX.Y.Z.tar.gz`, `.zip`, dan `SHA256SUMS`
+5. membuat GitHub Release bernama **unMineable vX.Y.Z** dengan isi catatan dari CHANGELOG (tag berisi `-`, mis. `v0.2.0-rc1`, menjadi pre-release)
 
 Cara merilis:
 
 ```bash
-sed -i 's/^VERSION = .*/VERSION = "2.2.0"/' unmineable/constants.py
-git add -A && git commit -m "release: v2.2.0"
-git tag v2.2.0
+sed -i 's/^VERSION = .*/VERSION = "0.2.0"/' unmineable/constants.py
+git add -A && git commit -m "release: v0.2.0"
+git tag v0.2.0
 git push origin main --tags
 ```
 
+Sebelum tag dibuat, pindahkan isi `## [Unreleased]` di `CHANGELOG.md` ke bagian `## [0.2.0] - TANGGAL`. Detail lengkap ada di [CONTRIBUTING.md](CONTRIBUTING.md).
+
 Pastikan di GitHub: Settings > Actions > General > Workflow permissions memakai **Read and write**, atau biarkan `permissions: contents: write` di workflow bekerja.
-
-## Menu utama
-
-| Menu | Isi |
-|---|---|
-| Mulai cepat | panduan login, cek XMRig, lalu mining |
-| Login / Logout | login ke akun unMineable, verifikasi ke pool |
-| Mining | start, stop, restart, foreground, dashboard |
-| Dashboard live | hashrate, share, riwayat, baterai, log |
-| Cek koneksi & sinkron | uji login pool dan data di website |
-| Dompet & profil | wizard alias/alamat, banyak profil, validasi alamat |
-| Pengaturan lanjutan | thread, batas CPU, RandomX, suhu, notifikasi, autostart |
-| Website unMineable | login/daftar akun, dashboard milikku, wizard resmi, koin, simulator, kontak resmi |
-| Instalasi & pembaruan | dependensi, XMRig, cek dan perbarui, uninstall |
-| Log | log XMRig dan guard, ukuran, bersihkan |
-| Alat & diagnosa | benchmark, doctor, daftar koin, statistik akun, info perangkat |
-
-## Perintah
-
-```
-unmineable                menu interaktif
-unmineable quickstart     panduan mulai cepat
-unmineable install        pasang dependensi dan XMRig
-unmineable login          login ke unMineable (alias atau dompet)
-unmineable logout         logout dan hentikan mining
-unmineable profiles       daftar profil
-unmineable start          mining di background
-unmineable stop           hentikan
-unmineable restart
-unmineable run            mining foreground
-unmineable status         dashboard sekali tampil
-unmineable watch          dashboard live
-unmineable sync           cek koneksi pool dan sinkron ke website
-unmineable stats          saldo, worker, pembayaran dari API
-unmineable coins          daftar koin dari API
-unmineable web            menu website
-unmineable bench          benchmark
-unmineable doctor         diagnosa
-unmineable logs -f        ikuti log (-g untuk guard, -n jumlah baris)
-unmineable boot on|off    autostart Termux:Boot
-unmineable notify-test    tes notifikasi
-unmineable update         perbarui
-unmineable -p NAMA start  pakai profil tertentu
-```
 
 ## Syarat mining
 
@@ -235,6 +204,14 @@ Default: pause 42°C, lanjut 38°C, baterai minimum 20%.
 - Build XMRig dari source di HP bisa 10-30 menit.
 - Format login, port pool, dan endpoint API mengikuti dokumentasi resmi unMineable. Path `/simulator` belum diverifikasi.
 - Tool ini tidak berafiliasi dengan unMineable maupun XMRig.
+
+## Kontribusi dan dukungan
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): cara berkontribusi, gaya kode, dan alur pull request
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md): kode etik komunitas
+- [SECURITY.md](SECURITY.md): cara melaporkan kerentanan secara privat
+- [SUPPORT.md](SUPPORT.md): tempat meminta bantuan
+- [CHANGELOG.md](CHANGELOG.md): riwayat perubahan
 
 ## Lisensi
 

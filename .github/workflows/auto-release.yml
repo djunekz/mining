@@ -31,10 +31,28 @@ jobs:
       - name: Cek versi terhadap tag
         run: |
           TAG="${GITHUB_REF_NAME}"
-          VERSION="$(sed -n 's/^VERSION = "\(.*\)"/\1/p' unmineable/constants.py)"
-          if [ "v${VERSION}" != "${TAG}" ]; then
-            echo "::warning::Tag ${TAG} tidak sama dengan VERSION v${VERSION} di constants.py"
+          VERSION="${TAG#v}"
+          CODE_VERSION="$(sed -n 's/^VERSION = "\(.*\)"/\1/p' unmineable/constants.py)"
+          if [ "${CODE_VERSION}" != "${VERSION}" ]; then
+            echo "::error::Tag ${TAG} tidak sama dengan VERSION ${CODE_VERSION} di unmineable/constants.py"
+            exit 1
           fi
+
+      - name: Ambil catatan rilis dari CHANGELOG
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v ver="${VERSION}" '
+            index($0, "## [" ver "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^\[[^]]+\]: / { exit }
+            found { print }
+          ' CHANGELOG.md | sed -e '/./,$!d' > notes.md
+          sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "::error::Tidak ada catatan untuk versi ${VERSION} di CHANGELOG.md"
+            exit 1
+          fi
+          cat notes.md
 
       - name: Bangun aset rilis
         run: |
@@ -52,13 +70,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF_NAME}"
-          NOTES='Pasang di Termux: unduh arsip, ekstrak, jalankan `bash install.sh` lalu pilih install dari lokal. Atau jalankan install.sh dan pilih install dari release.'
+          VERSION="${TAG#v}"
+          TITLE="unMineable v${VERSION}"
           FLAGS=""
-          case "$TAG" in
+          case "${VERSION}" in
             *-*) FLAGS="--prerelease" ;;
           esac
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" dist/* --clobber
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release edit "${TAG}" --title "${TITLE}" --notes-file notes.md
+            gh release upload "${TAG}" dist/* --clobber
           else
-            gh release create "$TAG" dist/* --title "unMineable Termux Miner ${TAG}" --notes "$NOTES" --generate-notes --verify-tag $FLAGS
+            gh release create "${TAG}" dist/* --title "${TITLE}" --notes-file notes.md --verify-tag ${FLAGS}
           fi

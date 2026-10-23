@@ -1,0 +1,63 @@
+name: Usulan fitur
+description: Usulkan fitur atau peningkatan baru
+title: "[Fitur]: "
+labels: ["enhancement", "perlu-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih atas idenya. Ingat bahwa proyek ini sengaja ringan: hanya memakai pustaka standar Python dan fokus pada mining di Termux.
+  - type: checkboxes
+    id: prasyarat
+    attributes:
+      label: Sebelum mengusulkan
+      options:
+        - label: Saya sudah mencari usulan serupa di issue yang ada
+          required: true
+        - label: Saya sudah membaca README dan fitur ini belum ada
+          required: true
+  - type: textarea
+    id: masalah
+    attributes:
+      label: Masalah yang ingin diselesaikan
+      description: Ceritakan kesulitan yang kamu alami, bukan hanya solusi yang kamu inginkan
+      placeholder: Saya kesulitan ... karena ...
+    validations:
+      required: true
+  - type: textarea
+    id: solusi
+    attributes:
+      label: Solusi yang diusulkan
+      description: Bagaimana fitur ini sebaiknya bekerja di menu atau perintah?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatif
+    attributes:
+      label: Alternatif yang sudah dipertimbangkan
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area yang terkait
+      options:
+        - Menu dan tampilan
+        - Login dan akun
+        - Mining dan guard
+        - Koneksi pool dan sinkron
+        - Instalasi dan pembaruan
+        - Notifikasi
+        - Dokumentasi
+        - Lainnya
+    validations:
+      required: true
+  - type: checkboxes
+    id: kontribusi
+    attributes:
+      label: Kontribusi
+      options:
+        - label: Saya bersedia mengirim pull request untuk fitur ini
+          required: false
+  - type: textarea
+    id: tambahan
+    attributes:
+      label: Informasi tambahan

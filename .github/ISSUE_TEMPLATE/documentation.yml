@@ -1,0 +1,29 @@
+name: Dokumentasi
+description: Laporkan dokumentasi yang salah, kurang jelas, atau usul perbaikan
+title: "[Docs]: "
+labels: ["documentation", "perlu-triage"]
+body:
+  - type: input
+    id: lokasi
+    attributes:
+      label: Berkas atau bagian yang dimaksud
+      placeholder: README.md, bagian Instalasi
+    validations:
+      required: true
+  - type: textarea
+    id: masalah
+    attributes:
+      label: Apa yang salah atau kurang jelas
+    validations:
+      required: true
+  - type: textarea
+    id: usulan
+    attributes:
+      label: Usulan perbaikan
+  - type: checkboxes
+    id: kontribusi
+    attributes:
+      label: Kontribusi
+      options:
+        - label: Saya bersedia mengirim pull request untuk perbaikan ini
+          required: false
