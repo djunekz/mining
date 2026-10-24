@@ -82,10 +82,19 @@ def load_average():
         return None
 
 
-def battery():
+_BATTERY_CACHE = {"data": None, "time": 0.0, "last_try": 0.0, "fail_until": 0.0}
+_BATTERY_MAX_AGE = 900
+_API_MIN_INTERVAL = 60
+_API_BACKOFF = 300
+_POWER_SUPPLY = "/sys/class/power_supply/battery"
+
+
+def _battery_from_api():
+    """Satu kali percobaan saja. Memanggil ulang saat timeout membuat Termux:API
+    mencatat 'Connection refused' (klien sudah keburu mati), jadi tidak diulang."""
     if not which("termux-battery-status"):
         return None
-    code, out = run(["termux-battery-status"], timeout=6)
+    code, out = run(["termux-battery-status"], timeout=25)
     if code != 0 or not out:
         return None
     try:
@@ -99,7 +108,68 @@ def battery():
         "status": str(data.get("status", "")).upper(),
         "plugged": str(data.get("plugged", "")).upper(),
         "health": str(data.get("health", "")).upper(),
+        "source": "termux-api",
     }
+
+
+def _read_sys(name):
+    try:
+        with open(f"{_POWER_SUPPLY}/{name}") as handle:
+            return handle.read().strip()
+    except OSError:
+        return None
+
+
+def _battery_from_sysfs():
+    capacity = _read_sys("capacity")
+    if capacity is None:
+        return None
+    try:
+        percent = int(capacity)
+    except ValueError:
+        return None
+    temp = None
+    raw = _read_sys("temp")
+    if raw:
+        try:
+            temp = float(raw) / 10.0
+        except ValueError:
+            temp = None
+    status = (_read_sys("status") or "").upper().replace(" ", "_")
+    if status == "NOT_CHARGING":
+        status = "DISCHARGING"
+    return {
+        "percent": percent,
+        "temp": temp,
+        "status": status,
+        "plugged": "",
+        "health": (_read_sys("health") or "").upper(),
+        "source": "sysfs",
+    }
+
+
+def battery():
+    """Termux:API paling sering sekali per menit; setelah gagal ditunda 5 menit.
+    Di sela itu dipakai sysfs atau nilai terakhir (maks 15 menit)."""
+    now = time.time()
+    cache = _BATTERY_CACHE
+    if cache["data"] and now - cache["time"] < _API_MIN_INTERVAL:
+        return cache["data"]
+    data = None
+    if now >= cache["fail_until"]:
+        cache["last_try"] = now
+        data = _battery_from_api()
+        if data is None:
+            cache["fail_until"] = now + _API_BACKOFF
+    if data is None:
+        data = _battery_from_sysfs()
+    if data:
+        cache["data"] = data
+        cache["time"] = now
+        return data
+    if cache["data"] and now - cache["time"] <= _BATTERY_MAX_AGE:
+        return dict(cache["data"], stale=True)
+    return None
 
 
 def cpu_temp():

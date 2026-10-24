@@ -115,6 +115,9 @@ def verify(profile):
     with ui.Spinner("Memverifikasi login ke pool unMineable"):
         results = connection.scan(profile)
     if any(result["ok"] for _, result in results):
+        if profile.mode == "alias":
+            ui.warn("Pool hanya menjawab 'OK' pada koneksi; ini belum membuktikan alias terdaftar di akunmu.")
+            ui.warn("Cek di website: worker harus muncul online setelah ada share diterima.")
         return "ok", "Login diterima pool"
     rejected = [r for _, r in results if r["stage"] == "login" and "menolak" in r["message"]]
     if rejected:

@@ -15,6 +15,10 @@ def battery_text(battery):
         parts.append(f"{battery['temp']:.1f}°C")
     if battery.get("status"):
         parts.append(battery["status"].lower())
+    if battery.get("stale"):
+        parts.append("(terakhir diketahui)")
+    elif battery.get("source") == "sysfs":
+        parts.append("(sysfs)")
     return " · ".join(parts) or "-"
 
 
