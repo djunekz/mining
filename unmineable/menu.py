@@ -64,7 +64,7 @@ def install_menu():
         ("2", "Pasang dependensi saja", ui.live(installer.install_dependencies)),
         ("3", "Pasang ulang XMRig", ui.live(actions.reinstall_xmrig)),
         ("4", "Cek pembaruan", updater.check),
-        ("5", "Perbarui ke rilis terbaru", ui.live(lambda: updater.update("release"))),
+        ("5", "Perbarui ke versi terbaru (pkg bila terpasang lewat pkg)", ui.live(lambda: updater.update("auto"))),
         ("6", "Perbarui dari branch main (dev)", ui.live(lambda: updater.update("main"))),
         ("7", "Uninstall", ui.live(actions.uninstall)),
     ]

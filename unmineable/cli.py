@@ -179,7 +179,7 @@ def build_parser():
         if name == "start":
             child.add_argument("-q", "--quiet", action="store_true", help="tanpa keluaran")
     update_parser = sub.add_parser("update", help="perbarui tool dari GitHub")
-    update_parser.add_argument("-c", "--channel", choices=("release", "main"), default="release", help="release (stabil) atau main (dev)")
+    update_parser.add_argument("-c", "--channel", choices=("auto", "pkg", "release", "main"), default="auto", help="auto (pkg bila terpasang lewat pkg, selain itu release), pkg, release (stabil), atau main (dev)")
     update_parser.add_argument("-y", "--yes", action="store_true", help="tanpa konfirmasi")
     update_parser.add_argument("--check", action="store_true", help="hanya cek versi")
     update_parser.set_defaults(handler=cmd_update)

@@ -1,7 +1,7 @@
 import os
 
 APP_NAME = "unmineable"
-VERSION = "0.1.0"
+VERSION = "0.1.5"
 AUTHOR = "djunekz"
 
 REPO = "https://github.com/djunekz/unmineable"

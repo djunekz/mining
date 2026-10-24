@@ -8,6 +8,27 @@ Catatan di bawah judul setiap versi dipakai otomatis sebagai isi GitHub Release 
 
 ## [Unreleased]
 
+---
+
+## [0.1.5] - 2026-10-24
+
+### Ditambahkan
+
+- Pembaruan lewat pkg untuk instalasi yang terpasang sebagai paket `unmineable`. Sebelum meng-upgrade, tool menyegarkan daftar paket (`pkg update`), lalu membandingkan versi terpasang dengan versi di repo. Bila versinya sama atau tidak ada versi lebih baru, upgrade tidak dijalankan. Upgrade hanya menyentuh paket `unmineable` (`apt install --only-upgrade`), bukan seluruh paket Termux.
+- Channel baru `auto` (bawaan) pada `unmineable update`: memakai pkg bila terpasang lewat pkg, selain itu memakai rilis GitHub seperti sebelumnya. Channel `pkg`, `release`, dan `main` tetap bisa dipilih lewat `-c`.
+- `unmineable update --check` dan menu Cek pembaruan ikut menampilkan status versi di repo pkg.
+
+### Diperbaiki
+
+- Termux:API yang sering error `Connection refused` dan membuat status baterai berganti-ganti antara tersedia dan "tidak tersedia". Penyebabnya, `termux-battery-status` dimatikan oleh timeout sebelum aplikasi Termux:API sempat menjawab. Sekarang perintah dipanggil satu kali per percobaan dengan batas 25 detik, paling sering sekali per menit, dan setelah gagal ditunda 5 menit agar tidak membanjiri Termux:API dengan permintaan.
+
+### Diubah
+
+- Pembacaan baterai punya cadangan: bila Termux:API gagal, data dibaca dari `/sys/class/power_supply/battery` (bila perangkat mengizinkan), dan bila keduanya gagal, nilai terakhir yang berhasil dipakai hingga 15 menit agar guard suhu dan baterai tidak kehilangan data seketika.
+- Baris baterai di status dan dashboard memberi keterangan sumber data: `(sysfs)` atau `(terakhir diketahui)`.
+
+---
+
 ## [0.1.0] - 2026-10-23
 
 Rilis pertama.
@@ -30,5 +51,6 @@ Rilis pertama.
 - Workflow `auto-release.yml` yang membuat GitHub Release otomatis saat tag dibuat.
 - Dokumen komunitas: panduan kontribusi, kode etik, kebijakan keamanan, template issue, dan template pull request.
 
-[Unreleased]: https://github.com/djunekz/unmineable/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/djunekz/unmineable/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/djunekz/unmineable/releases/tag/v0.1.5
 [0.1.0]: https://github.com/djunekz/unmineable/releases/tag/v0.1.0

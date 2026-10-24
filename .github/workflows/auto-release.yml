@@ -38,6 +38,9 @@ jobs:
             exit 1
           fi
 
+      - name: Cek sinkron versi di dokumen
+        run: python scripts/sync_version.py --check
+
       - name: Ambil catatan rilis dari CHANGELOG
         run: |
           VERSION="${GITHUB_REF_NAME#v}"

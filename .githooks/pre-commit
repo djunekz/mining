@@ -1,0 +1,6 @@
+#!/bin/sh
+# Bila unmineable/constants.py ikut di-commit, sinkronkan versi di berkas lain lalu ikut di-commit.
+cd "$(git rev-parse --show-toplevel)" || exit 1
+git diff --cached --name-only | grep -qx 'unmineable/constants.py' || exit 0
+python3 scripts/sync_version.py || exit 1
+git add README.md SECURITY.md CHANGELOG.md .github/ISSUE_TEMPLATE/bug_report.yml .github/ISSUE_TEMPLATE/connection_issue.yml

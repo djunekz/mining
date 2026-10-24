@@ -75,7 +75,7 @@ Tanpa argumen muncul pilihan interaktif. Bisa juga langsung:
 ```bash
 bash install.sh local
 bash install.sh release
-bash install.sh release v0.1.0
+bash install.sh release v0.1.5
 ```
 
 Pemasangan satu baris dari release (otomatis memilih release):

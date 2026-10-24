@@ -25,7 +25,7 @@ body:
     attributes:
       label: Versi unMineable
       description: Hasil dari `unmineable --version`
-      placeholder: unmineable 0.1.0
+      placeholder: unmineable 0.1.5
     validations:
       required: true
   - type: dropdown
